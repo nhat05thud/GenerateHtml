@@ -1,0 +1,32 @@
+﻿.body-content {
+}
+pre {
+    background: #fff;
+    font-size: 0;
+}
+    pre code {
+        font-size: 13px;
+        display: none;
+    }
+.hljs-tag {
+    display: inline-block;
+}
+.wrapper {
+    display: -ms-flex;
+    display: -webkit-flex;
+    display: flex;
+    -moz-flex-flow: row wrap;
+    -ms-flex-flow: row wrap;
+    -o-flex-flow: row wrap;
+    -webkit-flex-flow: row wrap;
+    flex-flow: row wrap;
+}
+
+    .wrapper .wrap-components,
+    .wrapper .wrap-view-code {
+        width: 50%;
+        padding: 30px 15px;
+    }
+.wrapper .wrap-view-code {
+    background: #f2f2f2;
+}
