@@ -40,6 +40,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -48,6 +49,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DbContext\GenerateHtmlDbContext.cs" />
+    <Compile Include="Migrations\201904220909522_AddTblHtmlComponent.cs" />
+    <Compile Include="Migrations\201904220909522_AddTblHtmlComponent.Designer.cs">
+      <DependentUpon>201904220909522_AddTblHtmlComponent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201905080944250_AddFieldImageName.cs" />
+    <Compile Include="Migrations\201905080944250_AddFieldImageName.Designer.cs">
+      <DependentUpon>201905080944250_AddFieldImageName.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\HtmlComponent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -55,8 +67,12 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DbContext\" />
-    <Folder Include="Model\" />
+    <EmbeddedResource Include="Migrations\201904220909522_AddTblHtmlComponent.resx">
+      <DependentUpon>201904220909522_AddTblHtmlComponent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905080944250_AddFieldImageName.resx">
+      <DependentUpon>201905080944250_AddFieldImageName.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

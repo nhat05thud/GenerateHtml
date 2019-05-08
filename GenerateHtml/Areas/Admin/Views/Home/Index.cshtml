@@ -1,0 +1,112 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+<div style="padding: 50px 0">
+    <div class="container">
+        <a class="btn btn-success" style="margin-bottom:10px; color: #fff;" onclick="PopupForm('@Url.Action("AddOrEdit","Home")')"><i class="fa fa-plus"></i> Add New</a>
+        <table id="componentTable" class="table table-striped table-bordered" style="width:100%;">
+            <thead>
+                <tr>
+                    <th>Tên</th>
+                    <th>Hình đại diện</th>
+                    <th></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+@section scripts{
+    <script>
+        var Popup,
+            dataTable;
+        $(document).ready(function() {
+            dataTable = $("#componentTable").DataTable({
+                "ajax": {
+                    "url": "@(Url.Action("GetData", "Home"))",
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "Name" },
+                    {
+                        "data": "ImageName",
+                        "render": function (data) {
+                            if (data != null) {
+                                return "<img src='/Uploads/images/" + data + "' style='display:block; margin: 0 auto; max-width: 100%; width: 150px;' />";
+                            }
+                            return "";
+                        },
+                        "width": "155px"
+                    },
+                    {
+                        "data": "Id",
+                        "render": function(data) {
+                            return "<a class='btn btn-primary btn-sm' style='margin-right:5px;color:#fff' onclick=PopupForm('@Url.Action("AddOrEdit", "Home")/" +
+                                data +
+                                "')><i class='fa fa-pencil'></i> Edit</a>" +
+                                "<a class='btn btn-danger btn-sm' style='color:#fff' onclick=Delete(" +
+                                data +
+                                ")><i class='fa fa-trash'></i> Delete</a>";
+                        },
+                        "orderable": false,
+                        "width": "135px"
+                    }
+                ],
+                "order": [[0, "desc"]],
+                "language": {
+                    "emptyTable": "No data found, Please clock on <b>Add New</b> Button",
+                    "lengthMenu": "Hiển thị _MENU_ item"
+                }
+            });
+        });
+
+        function PopupForm(url) {
+            var formDiv = $('<div class="addofeditpop"></div>');
+            $.get(url)
+                .done(function(response) {
+                    formDiv.html(response);
+                    Popup = formDiv.dialog({
+                        autoOpen: true,
+                        resizeable: false,
+                        title: 'Nhập thành phần html',
+                        height: 905,
+                        width: 900,
+                        close: function() {
+                            Popup.dialog('destroy').remove();
+                        }
+                    });
+                });
+        }
+
+        function onSuccess(result) {
+            if (result.success) {
+                Popup.dialog('close');
+                dataTable.ajax.reload();
+                $.notify(result.message,
+                    {
+                        globalPosition: "top center",
+                        className: "success"
+                    });
+            }
+        }
+
+        function Delete(id) {
+            if (confirm('Are you Sure to Delete this Employee Record?')) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Delete", "Home")/' + id,
+                    success: function(data) {
+                        if (data.success) {
+                            dataTable.ajax.reload();
+                            $.notify(data.message,
+                                {
+                                    globalPosition: "top center",
+                                    className: "success"
+                                });
+                        }
+                    }
+                });
+            }
+        }
+    </script>
+}

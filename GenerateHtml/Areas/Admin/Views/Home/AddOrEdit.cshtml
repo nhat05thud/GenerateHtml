@@ -1,0 +1,158 @@
+﻿@model GenerateHtml.Models.HtmlComponentViewModel
+@{
+    Layout = null;
+}
+@using (Ajax.BeginForm("AddOrEdit", "Home", null, new AjaxOptions
+{
+    HttpMethod = "POST",
+    OnSuccess = "onSuccess",
+    OnFailure = "onFailure"
+}, new { id = "addOrEditForm", enctype = "multipart/form-data" }))
+{
+    @Html.HiddenFor(model => model.Id)
+    <div class="form-group">
+        <label>Name</label>
+        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Name)
+    </div>
+    <div class="form-group">
+        <label>Html Code</label>
+        @Html.TextAreaFor(x => x.HtmlBody)
+    </div>
+    <div class="form-group">
+        <label>Hình đại diện</label>
+        <div class="input-group">
+            <div class="box">
+                <label class="customfile-input">
+                    <input type="file" name="imageFile" class="inputfile inputfile-6" data-multiple-caption="{count} files selected" accept="image/*" />
+                    @if (!string.IsNullOrEmpty(Model.ImageName))
+                    {
+                        <span>@(Model.ImageName)</span>
+                    }
+                    else
+                    {
+                        <span></span>
+                    }
+                    <strong>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
+                            <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
+                        </svg> Choose a file...
+                    </strong>
+                </label>
+                @Html.HiddenFor(x => x.ImageName)
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>StyleSheet</label>
+        <div class="input-group">
+            <div class="box">
+                <label class="customfile-input">
+                    <input type="file" name="styleSheetFile" class="inputfile inputfile-6" data-multiple-caption="{count} files selected" accept=".css" />
+                    @if (!string.IsNullOrEmpty(Model.CssPath))
+                    {
+                        <span>@(Model.CssPath)</span>
+                    }
+                    else
+                    {
+                        <span></span>
+                    }
+                    <strong>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
+                            <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
+                        </svg> Choose a file...
+                    </strong>
+                </label>
+                @Html.HiddenFor(x => x.CssPath)
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Script</label>
+        <div class="input-group">
+            <div class="box">
+                <label class="customfile-input">
+                    <input type="file" name="scriptFile" data-HasFile="" class="inputfile inputfile-6" data-multiple-caption="{count} files selected" accept=".js" />
+                    @if (!string.IsNullOrEmpty(Model.ScriptPath))
+                    {
+                        <span>@(Model.ScriptPath)</span>
+                    }
+                    else
+                    {
+                        <span></span>
+                    }
+                    <strong>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
+                            <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
+                        </svg> Choose a file...
+                    </strong>
+                </label>
+                @Html.HiddenFor(x => x.ScriptPath)
+            </div>
+        </div>
+    </div>
+    <div class="form-group text-center">
+        <input type="submit" value="Submit" class="btn btn-primary" style="padding: 10px 50px;" />
+    </div>
+}
+<script type="text/javascript">
+    CKEDITOR.replace("HtmlBody");
+    window.addEventListener("submit", function (e) {
+        var form = e.target;
+        if (form.getAttribute("enctype") === "multipart/form-data") {
+            if (form.dataset.ajax) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                var fileInput = document.getElementById('file-7');
+                var xhr = new XMLHttpRequest();
+                xhr.open(form.method, form.action);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        if (form.dataset.ajaxSuccess) {
+                            onSuccess(JSON.parse(xhr.response));
+                        }
+                    }
+                };
+                var formdata = new FormData(form);
+                if (fileInput != null) {
+                    if ($(fileInput).attr("data-HasFile") === "True" || fileInput.files.length > 0) {
+                        if (fileInput.files.length > 0) {
+                            for (i = 0; i < fileInput.files.length; i++) {
+                                formdata.append(fileInput.files[i].name, fileInput.files[i]);
+                            }
+                        }
+                    }
+                    else {
+                        swal("Error", "Please choose abstract submission file!!", "error");
+                        return false;
+                    }
+                }
+                xhr.send(formdata);
+            }
+        }
+    }, true);
+    var elements = document.querySelectorAll('.customfile-input');
+    Array.prototype.forEach.call(elements, function (element) {
+        var label = element,
+            labelVal = label.innerHTML;
+        var input = element.querySelector('input[type="file"]');
+        input.addEventListener('change', function (e) {
+            var fileName = '';
+            if (this.files && this.files.length > 1)
+                fileName = (this.getAttribute('data-multiple-caption') || '').replace('{count}', this.files.length);
+            else
+                fileName = e.target.value.split('\\').pop();
+
+            if (fileName) {
+                label.querySelector('span').innerHTML = fileName;
+                $(label).find('input[type="hidden"]').val(fileName);
+            } else {
+                label.innerHTML = labelVal;
+            }
+        });
+
+        // Firefox bug fix
+        input.addEventListener('focus', function () { input.classList.add('has-focus'); });
+        input.addEventListener('blur', function () { input.classList.remove('has-focus'); });
+    });
+</script>

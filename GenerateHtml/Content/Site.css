@@ -1,32 +1,18 @@
-﻿.body-content {
-}
-pre {
-    background: #fff;
-    font-size: 0;
-}
-    pre code {
-        font-size: 13px;
-        display: none;
-    }
-.hljs-tag {
-    display: inline-block;
-}
-.wrapper {
-    display: -ms-flex;
-    display: -webkit-flex;
-    display: flex;
-    -moz-flex-flow: row wrap;
-    -ms-flex-flow: row wrap;
-    -o-flex-flow: row wrap;
-    -webkit-flex-flow: row wrap;
-    flex-flow: row wrap;
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
 }
 
-    .wrapper .wrap-components,
-    .wrapper .wrap-view-code {
-        width: 50%;
-        padding: 30px 15px;
-    }
-.wrapper .wrap-view-code {
-    background: #f2f2f2;
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
 }
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+

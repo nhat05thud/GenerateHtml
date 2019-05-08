@@ -3,26 +3,19 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
-    @*<link rel="stylesheet" href="https://yandex.st/highlightjs/8.0/styles/vs.min.css">*@
+    <title>@ViewBag.Title</title>
+    <link href="/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/css/site.css" rel="stylesheet" />
+    <script src="/assets/js/jquery.min.js"></script>
 </head>
 <body>
     <div class="body-content">
         @RenderBody()
     </div>
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @*<script src="https://yandex.st/highlightjs/8.0/highlight.min.js"></script>
-    <script>
-        $("code").each(function () {
-            var that = $(this);
-            var html = that.html().trim();
-            that.empty();
-            that.text(html);
-        }).promise().done(function () { hljs.initHighlightingOnLoad(); });
-    </script>*@
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/jquery-ui.min.js"></script>
+    <script src="/assets/js/jquery.main.js"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html>
