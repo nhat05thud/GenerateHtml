@@ -93,33 +93,49 @@ namespace GenerateHtml.Areas.Admin.Controllers
                 }
                 else
                 {
-                    var obj = new HtmlComponent
+                    var componentItem = db.HtmlComponents
+                        .Select(x => new HtmlComponentViewModel
+                        {
+                            Id = x.Id,
+                            ScriptPath = x.ScriptPath,
+                            CssPath = x.CssPath,
+                            ImageName = x.ImageName
+                        }).FirstOrDefault(x => x.Id == comp.Id);
+                    if (componentItem != null)
                     {
-                        Id = comp.Id,
-                        Name = comp.Name,
-                        HtmlBody = comp.HtmlBody
-                    };
-                    if (imageFile != null)
-                    {
-                        HandleDeleteFile(comp.ImageName, Utils.ImagePath);
-                        var imageFilePath = HandleUploadFile(obj.Id, imageFile, Utils.ImagePath);
-                        obj.ImageName = imageFilePath;
+                        var obj = new HtmlComponent
+                        {
+                            Id = comp.Id,
+                            Name = comp.Name,
+                            HtmlBody = comp.HtmlBody,
+                            CssPath = componentItem.CssPath,
+                            ScriptPath = componentItem.ScriptPath,
+                            ImageName = componentItem.ImageName
+                        };
+
+                        if (imageFile != null)
+                        {
+                            HandleDeleteFile(comp.ImageName, Utils.ImagePath);
+                            var imageFilePath = HandleUploadFile(obj.Id, imageFile, Utils.ImagePath);
+                            obj.ImageName = imageFilePath;
+                        }
+                        if (styleSheetFile != null && Path.GetExtension(styleSheetFile.FileName) == ".css")
+                        {
+                            HandleDeleteFile(comp.CssPath, Utils.CssPath);
+                            var cssFilePath = HandleUploadFile(obj.Id, styleSheetFile, Utils.CssPath);
+                            obj.CssPath = cssFilePath;
+                        }
+                        if (scriptFile != null && Path.GetExtension(scriptFile.FileName) == ".js")
+                        {
+                            HandleDeleteFile(comp.ScriptPath, Utils.ScriptsPath);
+                            var scriptFilePath = HandleUploadFile(obj.Id, scriptFile, Utils.ScriptsPath);
+                            obj.ScriptPath = scriptFilePath;
+                        }
+                        db.Entry(obj).State = EntityState.Modified;
+                        db.SaveChanges();
+                        return Json(new { success = true, message = "Updated successfully!!!" }, JsonRequestBehavior.AllowGet);
                     }
-                    if (styleSheetFile != null && Path.GetExtension(styleSheetFile.FileName) == ".css")
-                    {
-                        HandleDeleteFile(comp.CssPath, Utils.CssPath);
-                        var cssFilePath = HandleUploadFile(obj.Id, styleSheetFile, Utils.CssPath);
-                        obj.CssPath = cssFilePath;
-                    }
-                    if (scriptFile != null && Path.GetExtension(scriptFile.FileName) == ".js")
-                    {
-                        HandleDeleteFile(comp.ScriptPath, Utils.ScriptsPath);
-                        var scriptFilePath = HandleUploadFile(obj.Id, scriptFile, Utils.ScriptsPath);
-                        obj.ScriptPath = scriptFilePath;
-                    }
-                    db.Entry(obj).State = EntityState.Modified;
-                    db.SaveChanges();
-                    return Json(new { success = true, message = "Updated successfully!!!" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = false, message = "Updated fail!!!" }, JsonRequestBehavior.AllowGet);
                 }
             }
         }

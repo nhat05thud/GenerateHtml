@@ -24,7 +24,7 @@
         <div class="input-group">
             <div class="box">
                 <label class="customfile-input">
-                    <input type="file" name="imageFile" class="inputfile inputfile-6" data-multiple-caption="{count} files selected" accept="image/*" />
+                    <input type="file" name="imageFile" data-HasFile="@(!string.IsNullOrEmpty(Model.ImageName))" class="inputfile inputfile-6" data-multiple-caption="{count} files selected" accept="image/*" />
                     @if (!string.IsNullOrEmpty(Model.ImageName))
                     {
                         <span>@(Model.ImageName)</span>
@@ -48,7 +48,7 @@
         <div class="input-group">
             <div class="box">
                 <label class="customfile-input">
-                    <input type="file" name="styleSheetFile" class="inputfile inputfile-6" data-multiple-caption="{count} files selected" accept=".css" />
+                    <input type="file" name="styleSheetFile" data-HasFile="@(!string.IsNullOrEmpty(Model.ImageName))" class="inputfile inputfile-6" data-multiple-caption="{count} files selected" accept=".css" />
                     @if (!string.IsNullOrEmpty(Model.CssPath))
                     {
                         <span>@(Model.CssPath)</span>
@@ -72,7 +72,7 @@
         <div class="input-group">
             <div class="box">
                 <label class="customfile-input">
-                    <input type="file" name="scriptFile" data-HasFile="" class="inputfile inputfile-6" data-multiple-caption="{count} files selected" accept=".js" />
+                    <input type="file" name="scriptFile" data-HasFile="@(!string.IsNullOrEmpty(Model.ImageName))" class="inputfile inputfile-6" data-multiple-caption="{count} files selected" accept=".js" />
                     @if (!string.IsNullOrEmpty(Model.ScriptPath))
                     {
                         <span>@(Model.ScriptPath)</span>
@@ -103,7 +103,6 @@
             if (form.dataset.ajax) {
                 e.preventDefault();
                 e.stopImmediatePropagation();
-                var fileInput = document.getElementById('file-7');
                 var xhr = new XMLHttpRequest();
                 xhr.open(form.method, form.action);
                 xhr.onreadystatechange = function () {
@@ -113,20 +112,26 @@
                         }
                     }
                 };
+                form[2].value = CKEDITOR.instances.HtmlBody.getData();
                 var formdata = new FormData(form);
-                if (fileInput != null) {
-                    if ($(fileInput).attr("data-HasFile") === "True" || fileInput.files.length > 0) {
-                        if (fileInput.files.length > 0) {
-                            for (i = 0; i < fileInput.files.length; i++) {
-                                formdata.append(fileInput.files[i].name, fileInput.files[i]);
+                var fileInput = $(".inputfile");
+                fileInput.each(function () {
+                    if ($(this).attr("data-HasFile") === "True" || $(this)[0].files.length > 0) {
+                        if ($(this)[0].files.length > 0) {
+                            for (i = 0; i < $(this)[0].files.length; i++) {
+                                formdata.append($(this)[0].files[i].name, $(this)[0].files[i]);
                             }
                         }
                     }
                     else {
-                        swal("Error", "Please choose abstract submission file!!", "error");
+                        $.notify("Please choose file attach!!",
+                            {
+                                globalPosition: "top center",
+                                className: "error"
+                            });
                         return false;
                     }
-                }
+                });
                 xhr.send(formdata);
             }
         }

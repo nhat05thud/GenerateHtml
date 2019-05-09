@@ -6,6 +6,7 @@ body {
     padding-top: 0;
     padding-bottom: 0;
     margin-left: 200px;
+    margin-right: 10px;
     -webkit-transition: margin 500ms ease;
     -moz-transition: margin 500ms ease;
     -ms-transition: margin 500ms ease;
@@ -133,6 +134,15 @@ body {
     padding: 3px 7px;
     position: absolute;
     top: -1px;
+}
+.builder.edit #header.column:after {
+    content: "Header";
+}
+.builder.edit #main-content.column:after {
+    content: "Main Content";
+}
+.builder.edit #footer.column:after {
+    content: "Footer";
 }
 
 .builder .container {

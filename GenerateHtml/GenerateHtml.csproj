@@ -45,6 +45,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DotNetZip, Version=1.13.3.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetZip.1.13.3\lib\net40\DotNetZip.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -123,6 +126,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassHelpers\ChangeSymbol.cs" />
     <Compile Include="ClassHelpers\Utils.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -218,6 +222,7 @@
     <Content Include="assets\images\ajax-loader.gif" />
     <Content Include="assets\js\bootstrap.min.js" />
     <Content Include="assets\js\jquery-ui.min.js" />
+    <Content Include="assets\js\jquery.html-clean.min.js" />
     <Content Include="assets\js\jquery.main.js" />
     <Content Include="assets\js\jquery.min.js" />
     <Content Include="Areas\Admin\Content\ckeditor\adapters\jquery.js" />
@@ -635,6 +640,11 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Images\" />
     <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="CurrentLayout\assets\css\" />
+    <Folder Include="CurrentLayout\assets\fonts\" />
+    <Folder Include="CurrentLayout\assets\images\" />
+    <Folder Include="CurrentLayout\assets\scripts\" />
+    <Folder Include="Download\" />
     <Folder Include="Scripts\" />
   </ItemGroup>
   <ItemGroup>
