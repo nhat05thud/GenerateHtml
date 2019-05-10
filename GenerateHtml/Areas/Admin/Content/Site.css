@@ -90,7 +90,7 @@ input.input-validation-error {
 
     .input-group .box > label span,
     .input-group .box > label input[type="text"] {
-        width: calc(100% - 185px);
+        width: calc(100% - 60px);
         min-height: 2em;
         display: inline-block;
         text-overflow: ellipsis;
@@ -105,7 +105,7 @@ input.input-validation-error {
         color: #f1e5e6;
         background-color: #d3394c;
         display: inline-block;
-        width: 180px;
+        width: 55px;
         font-size: 14px;
     }
 

@@ -18,76 +18,90 @@
     <div class="form-group">
         <label>Html Code</label>
         @Html.TextAreaFor(x => x.HtmlBody)
+        @Html.ValidationMessageFor(model => model.HtmlBody)
     </div>
     <div class="form-group">
-        <label>Hình đại diện</label>
-        <div class="input-group">
-            <div class="box">
-                <label class="customfile-input">
-                    <input type="file" name="imageFile" data-HasFile="@(!string.IsNullOrEmpty(Model.ImageName))" class="inputfile inputfile-6" data-multiple-caption="{count} files selected" accept="image/*" />
-                    @if (!string.IsNullOrEmpty(Model.ImageName))
-                    {
-                        <span>@(Model.ImageName)</span>
-                    }
-                    else
-                    {
-                        <span></span>
-                    }
-                    <strong>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
-                            <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
-                        </svg> Choose a file...
-                    </strong>
-                </label>
-                @Html.HiddenFor(x => x.ImageName)
+        <label>Category</label>
+        @Html.DropDownListFor(model => model.CategoryId, (List<SelectListItem>)ViewBag.Category, "--Chọn danh mục--", new { @class = "form-control" })
+        @Html.HiddenFor(model => model.CategoryId)
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>Hình đại diện</label>
+                <div class="input-group">
+                    <div class="box">
+                        <label class="customfile-input">
+                            <input type="file" name="imageFile" data-HasFile="@(!string.IsNullOrEmpty(Model.ImageName))" class="inputfile inputfile-6" data-multiple-caption="{count} files selected" accept="image/*" />
+                            @if (!string.IsNullOrEmpty(Model.ImageName))
+                            {
+                                <span>@(Model.ImageName)</span>
+                            }
+                            else
+                            {
+                                <span></span>
+                            }
+                            <strong>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
+                                    <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
+                                </svg>
+                            </strong>
+                        </label>
+                        @Html.HiddenFor(x => x.ImageName)
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label>StyleSheet</label>
-        <div class="input-group">
-            <div class="box">
-                <label class="customfile-input">
-                    <input type="file" name="styleSheetFile" data-HasFile="@(!string.IsNullOrEmpty(Model.ImageName))" class="inputfile inputfile-6" data-multiple-caption="{count} files selected" accept=".css" />
-                    @if (!string.IsNullOrEmpty(Model.CssPath))
-                    {
-                        <span>@(Model.CssPath)</span>
-                    }
-                    else
-                    {
-                        <span></span>
-                    }
-                    <strong>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
-                            <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
-                        </svg> Choose a file...
-                    </strong>
-                </label>
-                @Html.HiddenFor(x => x.CssPath)
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>StyleSheet</label>
+                <div class="input-group">
+                    <div class="box">
+                        <label class="customfile-input">
+                            <input type="file" name="styleSheetFile" data-HasFile="@(!string.IsNullOrEmpty(Model.ImageName))" class="inputfile inputfile-6" data-multiple-caption="{count} files selected" accept=".css" />
+                            @if (!string.IsNullOrEmpty(Model.CssPath))
+                            {
+                                <span>@(Model.CssPath)</span>
+                            }
+                            else
+                            {
+                                <span></span>
+                            }
+                            <strong>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
+                                    <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
+                                </svg>
+                            </strong>
+                        </label>
+                        @Html.HiddenFor(x => x.CssPath)
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label>Script</label>
-        <div class="input-group">
-            <div class="box">
-                <label class="customfile-input">
-                    <input type="file" name="scriptFile" data-HasFile="@(!string.IsNullOrEmpty(Model.ImageName))" class="inputfile inputfile-6" data-multiple-caption="{count} files selected" accept=".js" />
-                    @if (!string.IsNullOrEmpty(Model.ScriptPath))
-                    {
-                        <span>@(Model.ScriptPath)</span>
-                    }
-                    else
-                    {
-                        <span></span>
-                    }
-                    <strong>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
-                            <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
-                        </svg> Choose a file...
-                    </strong>
-                </label>
-                @Html.HiddenFor(x => x.ScriptPath)
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>Script</label>
+                <div class="input-group">
+                    <div class="box">
+                        <label class="customfile-input">
+                            <input type="file" name="scriptFile" data-HasFile="@(!string.IsNullOrEmpty(Model.ImageName))" class="inputfile inputfile-6" data-multiple-caption="{count} files selected" accept=".js" />
+                            @if (!string.IsNullOrEmpty(Model.ScriptPath))
+                            {
+                                <span>@(Model.ScriptPath)</span>
+                            }
+                            else
+                            {
+                                <span></span>
+                            }
+                            <strong>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
+                                    <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
+                                </svg>
+                            </strong>
+                        </label>
+                        @Html.HiddenFor(x => x.ScriptPath)
+                    </div>
+                </div>
             </div>
         </div>
     </div>

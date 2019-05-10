@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using Generate.EntityFrameWork.Models;
 
 namespace GenerateHtml.Models
 {
@@ -14,5 +16,8 @@ namespace GenerateHtml.Models
         public string ImageName { get; set; }
         public string CssPath { get; set; }
         public string ScriptPath { get; set; }
+        public int CategoryId { get; set; }
+        public string CategoryName { get; set; }
+        public List<HtmlComponentCategory> HtmlComponentCategories { get; set; }
     }
 }

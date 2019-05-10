@@ -19,11 +19,19 @@ namespace GenerateHtml.Controllers
             using (var db = new GenerateHtmlDbContext())
             {
                 var compList = db.HtmlComponents
-                    .Select(x => new HtmlComponentViewModel
+                    .GroupBy(x => x.CategoryId, (key, g) => new ListComponentWithCategory
                     {
-                        Id = x.Id,
-                        ImageName = x.ImageName
-                    }).ToList();
+                        CategoryId = key,
+                        ListComponent = g.Select(y => new HtmlComponentViewModel
+                        {
+                            Id = y.Id,
+                            Name = y.Name,
+                            ImageName = y.ImageName,
+                            CategoryId = y.CategoryId,
+                            CategoryName = y.HtmlComponentCategory.Name
+                        }).ToList()
+                    })
+                    .ToList();
                 return View(compList);
             }
         }
@@ -92,13 +100,16 @@ namespace GenerateHtml.Controllers
             try
             {
                 var sourceFolderPath = Server.MapPath(Path.Combine(Utils.DownLoadFolder, websiteName));
-                if (System.IO.File.Exists(sourceFolderPath))
+                if (Directory.Exists(sourceFolderPath))
                 {
+                    var memoryStream = new MemoryStream();
                     using (var zip = new ZipFile())
                     {
                         zip.AddDirectory(sourceFolderPath);
-                        zip.Save(Path.Combine(Server.MapPath(Utils.DownLoadFolder), websiteName + ".zip"));
-                        return File(Path.Combine(Server.MapPath(Utils.DownLoadFolder), websiteName + ".zip"), "application/zip", websiteName + ".zip");
+                        //zip.Save(Path.Combine(Server.MapPath(Utils.DownLoadFolder), websiteName + ".zip"));
+                        zip.Save(memoryStream);
+                        memoryStream.Seek(0, SeekOrigin.Begin);
+                        return File(memoryStream.ToArray(), "application/zip", websiteName + ".zip");
                     }
                 }
 

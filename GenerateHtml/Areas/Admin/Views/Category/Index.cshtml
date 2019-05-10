@@ -3,13 +3,11 @@
 }
 <div style="padding: 50px 0">
     <div class="container">
-        <a class="btn btn-success" style="margin-bottom:10px; color: #fff;" onclick="PopupForm('@Url.Action("AddOrEdit","Home")')"><i class="fa fa-plus"></i> Add New</a>
-        <table id="componentTable" class="table table-striped table-bordered" style="width:100%;">
+        <a class="btn btn-success" style="margin-bottom:10px; color: #fff;" onclick="PopupForm('@Url.Action("AddOrEdit","Category")')"><i class="fa fa-plus"></i> Add New</a>
+        <table id="componentCategoryTable" class="table table-striped table-bordered" style="width:100%;">
             <thead>
                 <tr>
                     <th>Tên</th>
-                    <th>Danh mục</th>
-                    <th>Hình đại diện</th>
                     <th></th>
                 </tr>
             </thead>
@@ -21,29 +19,18 @@
         var Popup,
             dataTable;
         $(document).ready(function() {
-            dataTable = $("#componentTable").DataTable({
+            dataTable = $("#componentCategoryTable").DataTable({
                 "ajax": {
-                    "url": "@(Url.Action("GetData", "Home"))",
+                    "url": "@(Url.Action("GetData", "Category"))",
                     "type": "GET",
                     "datatype": "json"
                 },
                 "columns": [
                     { "data": "Name" },
-                    { "data": "CategoryName" },
-                    {
-                        "data": "ImageName",
-                        "render": function (data) {
-                            if (data != null) {
-                                return "<img src='/Uploads/images/" + data + "' style='display:block; margin: 0 auto; max-width: 100%; width: 150px;' />";
-                            }
-                            return "";
-                        },
-                        "width": "155px"
-                    },
                     {
                         "data": "Id",
                         "render": function(data) {
-                            return "<a class='btn btn-primary btn-sm' style='margin-right:5px;color:#fff' onclick=PopupForm('@Url.Action("AddOrEdit", "Home")/" +
+                            return "<a class='btn btn-primary btn-sm' style='margin-right:5px;color:#fff' onclick=PopupForm('@Url.Action("AddOrEdit", "Category")/" +
                                 data +
                                 "')><i class='fa fa-pencil'></i> Edit</a>" +
                                 "<a class='btn btn-danger btn-sm' style='color:#fff' onclick=Delete(" +
@@ -71,8 +58,8 @@
                         autoOpen: true,
                         resizeable: false,
                         title: 'Nhập thành phần html',
-                        height: 905,
-                        width: 900,
+                        height: 220,
+                        width: 600,
                         close: function() {
                             Popup.dialog('destroy').remove();
                         }
@@ -100,10 +87,10 @@
         }
 
         function Delete(id) {
-            if (confirm('Are you Sure to Delete this Employee Record?')) {
+            if (confirm('Are you Sure to Delete this category Record?')) {
                 $.ajax({
                     type: "POST",
-                    url: '@Url.Action("Delete", "Home")/' + id,
+                    url: '@Url.Action("Delete", "Category")/' + id,
                     success: function(data) {
                         if (data.success) {
                             dataTable.ajax.reload();

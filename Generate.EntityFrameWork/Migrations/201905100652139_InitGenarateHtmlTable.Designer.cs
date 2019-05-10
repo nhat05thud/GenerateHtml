@@ -7,13 +7,13 @@ namespace Generate.EntityFrameWork.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class AddTblHtmlComponent : IMigrationMetadata
+    public sealed partial class InitGenarateHtmlTable : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AddTblHtmlComponent));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(InitGenarateHtmlTable));
         
         string IMigrationMetadata.Id
         {
-            get { return "201904220909522_AddTblHtmlComponent"; }
+            get { return "201905100652139_InitGenarateHtmlTable"; }
         }
         
         string IMigrationMetadata.Source

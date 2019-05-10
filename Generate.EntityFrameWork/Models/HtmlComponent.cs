@@ -13,5 +13,8 @@ namespace Generate.EntityFrameWork.Models
         public string ImageName { get; set; }
         public string CssPath { get; set; }
         public string ScriptPath { get; set; }
+        [ForeignKey("HtmlComponentCategory")]
+        public int CategoryId { get; set; }
+        public HtmlComponentCategory HtmlComponentCategory { get; set; }
     }
 }

@@ -210,7 +210,7 @@ function download(element) {
                     type: "POST",
                     url: "/home/handledownloadhtml",
                     data: data,
-                    success: function (result) {
+                    success: function(result) {
                         if (result.success) {
                             swal("Success", result.message, "success");
                         } else {
@@ -220,6 +220,8 @@ function download(element) {
                         $(".loading_div").css("display", "none");
                     }
                 });
+            } else {
+                $this.attr("disabled", false);
             }
         });
 }

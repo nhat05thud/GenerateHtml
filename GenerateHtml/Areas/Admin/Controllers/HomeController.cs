@@ -28,7 +28,9 @@ namespace GenerateHtml.Areas.Admin.Controllers
                     {
                         Id = x.Id,
                         Name = x.Name,
-                        ImageName = x.ImageName
+                        ImageName = x.ImageName,
+                        CategoryId = x.CategoryId,
+                        CategoryName = x.HtmlComponentCategory.Name
                     }).ToList();
                 return Json(new { data = compList }, JsonRequestBehavior.AllowGet);
             }
@@ -36,12 +38,19 @@ namespace GenerateHtml.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult AddOrEdit(int id = 0)
         {
-            if (id == 0)
-            {
-                return View(new HtmlComponentViewModel());
-            }
             using (var db = new GenerateHtmlDbContext())
             {
+                var category = db.HtmlComponentCategories
+                    .Select(x => new SelectListItem
+                    {
+                        Value = x.Id.ToString(),
+                        Text = x.Name
+                    }).ToList();
+                ViewBag.Category = category;
+                if (id == 0)
+                {
+                    return View(new HtmlComponentViewModel());
+                }
                 var compList = db.HtmlComponents
                     .Select(x => new HtmlComponentViewModel
                     {
@@ -50,7 +59,9 @@ namespace GenerateHtml.Areas.Admin.Controllers
                         HtmlBody = x.HtmlBody,
                         ScriptPath = x.ScriptPath,
                         CssPath = x.CssPath,
-                        ImageName = x.ImageName
+                        ImageName = x.ImageName,
+                        CategoryId = x.CategoryId,
+                        CategoryName = x.HtmlComponentCategory.Name
                     }).FirstOrDefault(x => x.Id == id);
                 return View(compList);
             }
@@ -68,7 +79,8 @@ namespace GenerateHtml.Areas.Admin.Controllers
                         HtmlBody = comp.HtmlBody,
                         ScriptPath = comp.ScriptPath,
                         CssPath = comp.CssPath,
-                        ImageName = comp.ImageName
+                        ImageName = comp.ImageName,
+                        CategoryId = comp.CategoryId
                     };
                     db.HtmlComponents.Add(obj);
                     db.SaveChanges();
@@ -99,7 +111,8 @@ namespace GenerateHtml.Areas.Admin.Controllers
                             Id = x.Id,
                             ScriptPath = x.ScriptPath,
                             CssPath = x.CssPath,
-                            ImageName = x.ImageName
+                            ImageName = x.ImageName,
+                            CategoryId = comp.CategoryId
                         }).FirstOrDefault(x => x.Id == comp.Id);
                     if (componentItem != null)
                     {
@@ -110,7 +123,8 @@ namespace GenerateHtml.Areas.Admin.Controllers
                             HtmlBody = comp.HtmlBody,
                             CssPath = componentItem.CssPath,
                             ScriptPath = componentItem.ScriptPath,
-                            ImageName = componentItem.ImageName
+                            ImageName = componentItem.ImageName,
+                            CategoryId = componentItem.CategoryId
                         };
 
                         if (imageFile != null)
