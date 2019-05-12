@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using GenerateHtml.ClassHelpers
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -16,18 +17,36 @@
     <script src="/Areas/Admin/Scripts/jquery.validate.unobtrusive.min.js"></script>
 </head>
 <body>
-    <div class="container body-content">
-        @RenderBody()
+    <div class="body-content">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="collapse navbar-collapse">
+                <div class="container">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item @Html.IsSelected(actions: "Index", controllers: "Home")">
+                            <a class="nav-link" href="@Url.Action("Index", "Home")">Components</a>
+                        </li>
+                        <li class="nav-item @Html.IsSelected(actions: "Index", controllers: "Category")">
+                            <a class="nav-link" href="@Url.Action("Index", "Category")">Category</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="container">
+            @RenderBody()
+        </div>
         <hr />
-        <footer>
-            <p>Nhật</p>
-        </footer>
+        <div class="container">
+            <footer>
+                <p>Nhật</p>
+            </footer>
+        </div>
     </div>
     <script src="/Areas/Admin/Scripts/bootstrap.min.js"></script>
     <script src="/Areas/Admin/Scripts/jquery-ui-1.12.1.min.js"></script>
     <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script src="/Areas/Admin/Scripts/jquery.dataTables.min.js"></script>
-@*<script src="/Areas/Admin/Scripts/dataTables.bootstrap.min.js"></script>*@
+    @*<script src="/Areas/Admin/Scripts/dataTables.bootstrap.min.js"></script>*@
     <script src="/Areas/Admin/Content/ckeditor/ckeditor.js"></script>
     <script src="/Areas/Admin/Content/ckeditor/sk-init.js"></script>
     <script src="/Areas/Admin/Scripts/notify.min.js"></script>

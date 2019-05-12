@@ -71,6 +71,17 @@ namespace GenerateHtml.Areas.Admin.Controllers
         {
             using (var db = new GenerateHtmlDbContext())
             {
+                var category = db.HtmlComponentCategories
+                    .Select(x => new SelectListItem
+                    {
+                        Value = x.Id.ToString(),
+                        Text = x.Name
+                    }).ToList();
+                ViewBag.Category = category;
+                if (!ModelState.IsValid)
+                {
+                    return PartialView("~/Areas/Admin/Views/Home/_form.cshtml", comp);
+                }
                 if (comp.Id == 0)
                 {
                     var obj = new HtmlComponent

@@ -34,7 +34,7 @@
                         "data": "ImageName",
                         "render": function (data) {
                             if (data != null) {
-                                return "<img src='/Uploads/images/" + data + "' style='display:block; margin: 0 auto; max-width: 100%; width: 150px;' />";
+                                return "<img src='/Uploads/images/" + data + "?w=150&h=50' style='display:block; margin: 0 auto; max-width: 100%;' />";
                             }
                             return "";
                         },
@@ -88,13 +88,6 @@
                     {
                         globalPosition: "top center",
                         className: "success"
-                    });
-            } else {
-                Popup.dialog('close');
-                $.notify(result.message,
-                    {
-                        globalPosition: "top center",
-                        className: "error"
                     });
             }
         }

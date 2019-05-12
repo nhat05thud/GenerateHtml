@@ -44,7 +44,7 @@ namespace GenerateHtml.Areas.Admin.Controllers
             }
             using (var db = new GenerateHtmlDbContext())
             {
-                var compList = db.HtmlComponents
+                var compList = db.HtmlComponentCategories
                     .Select(x => new HtmlComponentCategoryViewModel
                     {
                         Id = x.Id,
@@ -56,6 +56,10 @@ namespace GenerateHtml.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult AddOrEdit(HtmlComponentCategoryViewModel comp)
         {
+            if (!ModelState.IsValid)
+            {
+                return PartialView("~/Areas/Admin/Views/Category/_form.cshtml", comp);
+            }
             using (var db = new GenerateHtmlDbContext())
             {
                 if (comp.Id == 0)

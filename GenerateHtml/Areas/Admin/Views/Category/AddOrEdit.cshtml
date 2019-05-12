@@ -1,4 +1,5 @@
-﻿@model GenerateHtml.Models.HtmlComponentCategoryViewModel
+﻿@using GenerateHtml.Models
+@model HtmlComponentCategoryViewModel
 @{
     Layout = null;
 }
@@ -6,16 +7,11 @@
 {
     HttpMethod = "POST",
     OnSuccess = "onSuccess",
-    OnFailure = "onFailure"
+    OnFailure = "onFailure",
+    UpdateTargetId = "updateContent"
 }, new { id = "addOrEditForm", enctype = "multipart/form-data" }))
 {
-    @Html.HiddenFor(model => model.Id)
-    <div class="form-group">
-        <label>Name</label>
-        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-        @Html.ValidationMessageFor(model => model.Name)
-    </div>
-    <div class="form-group text-center">
-        <input type="submit" value="Submit" class="btn btn-primary" style="padding: 10px 50px;" />
+    <div id="updateContent">
+        @Html.Partial("~/Areas/Admin/Views/Category/_form.cshtml", Model)
     </div>
 }

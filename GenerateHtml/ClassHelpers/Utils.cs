@@ -1,7 +1,10 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using System.Linq;
 using System.Web;
+using System.Web.Mvc;
+using System.Web.Routing;
 using Microsoft.Win32;
+using static System.String;
 
 namespace GenerateHtml.ClassHelpers
 {
@@ -19,7 +22,7 @@ namespace GenerateHtml.ClassHelpers
         public static readonly string DownLoadFolder = "/Download";
         public static string GetDownloadFolderPath()
         {
-            return Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders", "{374DE290-123F-4565-9164-39C4925E467B}", String.Empty).ToString();
+            return Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders", "{374DE290-123F-4565-9164-39C4925E467B}", Empty).ToString();
         }
         public static string CreateDirectoryIfNotExists(string parentPath, string childPath, bool isUpLoadFolder)
         {

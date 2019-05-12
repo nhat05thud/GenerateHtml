@@ -3,7 +3,20 @@
     $('.demo').css('min-height', $(window).height() - 160);
 });
 $(document).ready(function () {
-    $('[data-toggle="tooltip"]').tooltip();
+    $(".builder .sidebar-nav").niceScroll();
+    $(".builder .sidebar-nav .nav-parent > ul").niceScroll();
+    $(".builder .sidebar-nav .nav-parent").click(function () {
+        if ($(this).hasClass("active")) {
+            $(this).removeClass("active");
+        } else {
+            $(".builder .sidebar-nav .nav-parent").removeClass("active");
+            $(this).addClass("active");
+        }
+    });
+    $(".fancybox__item").fancybox({
+        transitionEffect: "slide",
+        loop: true
+    });
     var arrIds = [];
     $('body').css('min-height', $(window).height() - 90);
     $('.demo').css('min-height', $(window).height() - 160);
@@ -35,6 +48,7 @@ $(document).ready(function () {
         handle: ".drag",
         drag: function (e, ui) {
             ui.helper.width(400);
+            $(".builder .sidebar-nav .nav-parent").removeClass("active");
         },
         stop: function (e, ui) {
             if (ui.helper[0].isConnected === false) {
@@ -54,13 +68,11 @@ $(document).ready(function () {
                             success: function (result) {
                                 $(element).find(".view").html(result.html);
                                 $(".demo .box.box-element[data-id=" + id + "]").find(".view").html(result.html);
-                                if (result.css != null && !$("link[href='/Uploads/css/" + result.css + "']").length) {
-                                    $('<link rel="stylesheet" href="/Uploads/css/' + result.css + '" type="text/css" />')
-                                        .appendTo('head');
+                                if (result.css != null && $("link[href='/Uploads/css/" + result.css + "']").length <= 0) {
+                                    $("head").append('<link rel="stylesheet" href="/Uploads/css/' + result.css + '" type="text/css" />');
                                 }
-                                if (result.script != null &&
-                                    !$("script[src='/Uploads/scripts/" + result.script + "']").length) {
-                                    $('<script src="/Uploads/scripts/' + result.script + '" />').appendTo('body');
+                                if (result.script != null && $("script[src='/Uploads/scripts/" + result.script + "']").length <= 0) {
+                                    $("body").append('<script src="/Uploads/scripts/'+ result.script +'" type="text/javascript"></script>');
                                 }
                                 $(".loading_div").css("display", "none");
                             }
@@ -210,11 +222,11 @@ function download(element) {
                     type: "POST",
                     url: "/home/handledownloadhtml",
                     data: data,
-                    success: function(result) {
-                        if (result.success) {
-                            swal("Success", result.message, "success");
-                        } else {
+                    success: function (result) {
+                        if (result.success === false) {
                             swal("Error", result.message, "error");
+                        } else {
+                            swal("Success", "Download success", "success");
                         }
                         $this.attr("disabled", false);
                         $(".loading_div").css("display", "none");

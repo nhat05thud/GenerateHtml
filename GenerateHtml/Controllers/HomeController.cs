@@ -19,10 +19,15 @@ namespace GenerateHtml.Controllers
             using (var db = new GenerateHtmlDbContext())
             {
                 var compList = db.HtmlComponents
-                    .GroupBy(x => x.CategoryId, (key, g) => new ListComponentWithCategory
+                    .GroupBy(x => new HtmlComponentGroup
                     {
-                        CategoryId = key,
-                        ListComponent = g.Select(y => new HtmlComponentViewModel
+                        Id = x.CategoryId,
+                        Name = x.HtmlComponentCategory.Name
+                    }, (key, group) => new ListComponentWithCategory
+                    {
+                        CategoryId = key.Id,
+                        CategoryName = key.Name,
+                        ListComponent = group.Select(y => new HtmlComponentViewModel
                         {
                             Id = y.Id,
                             Name = y.Name,
