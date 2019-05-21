@@ -18,6 +18,7 @@ namespace GenerateHtml.Models
         public string ImageName { get; set; }
         public string CssPath { get; set; }
         public string ScriptPath { get; set; }
+        public string MediaInfo { get; set; }
         [Required(ErrorMessage = "Chọn danh mục")]
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }

@@ -1,0 +1,76 @@
+﻿@using GenerateHtml.Models
+@model PluginViewModel
+@{
+    Layout = null;
+}
+@using (Ajax.BeginForm("AddOrEdit", "Plugin", null, new AjaxOptions
+{
+    HttpMethod = "POST",
+    OnSuccess = "onSuccess",
+    OnFailure = "onFailure",
+    UpdateTargetId = "updateContent"
+}, new { id = "addOrEditForm", enctype = "multipart/form-data" }))
+{
+    <div id="updateContent">
+        @Html.Partial("~/Areas/Admin/Views/Plugin/_form.cshtml", Model)
+    </div>
+}
+<script type="text/javascript">
+    function IsJsonString(str) {
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            return false;
+        }
+        return true;
+    }
+    window.addEventListener("submit", function (e) {
+        var form = e.target;
+        if (form.getAttribute("enctype") === "multipart/form-data") {
+            if (form.dataset.ajax) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                var xhr = new XMLHttpRequest();
+                xhr.open(form.method, form.action);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        if (form.dataset.ajaxUpdate) {
+                            var updateTarget = document.querySelector(form.dataset.ajaxUpdate);
+                            if (updateTarget) {
+                                if (!IsJsonString(xhr.responseText)) {
+                                    $(updateTarget).html(xhr.responseText);
+                                }
+                            }
+                        }
+                        if (form.dataset.ajaxSuccess) {
+                            if (xhr.response && IsJsonString(xhr.response)) {
+                                onSuccess(JSON.parse(xhr.response));
+                            }
+                        }
+                    }
+                };
+                var formdata = new FormData(form);
+                var fileInput = $(".inputfile");
+                fileInput.each(function () {
+                    if ($(this).attr("data-HasFile") === "True" || $(this)[0].files.length > 0) {
+                        if ($(this)[0].files.length > 0) {
+                            for (i = 0; i < $(this)[0].files.length; i++) {
+                                formdata.append($(this)[0].files[i].name, $(this)[0].files[i]);
+                            }
+                        }
+                    }
+                    else {
+                        $.notify("Please choose file attach!!",
+                            {
+                                globalPosition: "top center",
+                                className: "error"
+                            });
+                        return false;
+                    }
+                });
+                xhr.send(formdata);
+            }
+        }
+    }, true);
+</script>
+

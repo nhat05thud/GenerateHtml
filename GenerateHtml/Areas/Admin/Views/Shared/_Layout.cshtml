@@ -26,7 +26,10 @@
                             <a class="nav-link" href="@Url.Action("Index", "Home")">Components</a>
                         </li>
                         <li class="nav-item @Html.IsSelected(actions: "Index", controllers: "Category")">
-                            <a class="nav-link" href="@Url.Action("Index", "Category")">Category</a>
+                            <a class="nav-link" href="@Url.Action("Index", "Category")">Categories</a>
+                        </li>
+                        <li class="nav-item @Html.IsSelected(actions: "Index", controllers: "Plugin")">
+                            <a class="nav-link" href="@Url.Action("Index", "Plugin")">Plugins</a>
                         </li>
                     </ul>
                 </div>

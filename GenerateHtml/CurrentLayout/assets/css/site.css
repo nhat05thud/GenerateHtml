@@ -1,0 +1,440 @@
+﻿:focus {
+    outline: none;
+}
+
+body {
+    font-family: 'UTMAvo';
+    font-size: 14px;
+    color: #363636;
+}
+
+ul, li, ol {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+a:hover, a:focus {
+    text-decoration: none;
+}
+
+a:visited, a:focus {
+    outline: none;
+}
+
+p {
+    margin: 0;
+}
+
+#wrapper {
+    overflow: hidden;
+    position: absolute;
+    min-height: 100%;
+    width: 100%;
+    z-index: 1;
+}
+
+#wrapper-in {
+    background: #fff;
+    top: 0;
+    left: 0;
+    position: relative;
+    width: 100%;
+    z-index: 99;
+    overflow: hidden;
+}
+
+.clr {
+    clear: both;
+}
+.custom__width {
+    max-width: 100%;
+    margin: 0 auto;
+    display: block;
+}
+.wrap-content p {
+    margin-bottom: 10px;
+}
+.wrap-content img {
+    display: block;
+    margin: 0 auto 10px;
+    max-width: 100%;
+}
+.wrap-content table {
+    width: 100% !important;
+    margin-bottom: 15px;
+    border-collapse: collapse !important;
+    border-spacing: 0;
+}
+    .wrap-content table th, .wrap-content table td {
+        padding: 10px;
+        text-align: center;
+        border-width: 1px;
+        border-color: rgba(0, 0, 0, .08);
+        border-style: solid;
+        vertical-align: middle;
+    }
+    .wrap-content table tr:nth-of-type(2n) {
+        background: rgba(0, 0, 0, .02);
+    }
+
+/*=========== scroll to top ==========*/
+.scroll-to-top {
+    width: 40px;
+    height: 40px;
+    position: fixed;
+    bottom: 50px;
+    right: 10px;
+    display: none;
+    background: #333 url("/images/scrolltop.png") no-repeat scroll center center;
+    z-index: 9999999;
+    text-align: center;
+    display: none;
+    vertical-align: middle;
+}
+    .scroll-to-top i {
+        font-size: 30px;
+        color: #fff;
+        line-height: 35px;
+    }
+/*============= menu (*style css cho menu*) ==================*/
+
+/*========================menu mobile (*style css toggle menu(nút nhấp hiện menu)*) ==========================*/
+.menu-mo {
+    color: #0f487e;
+    display: block;
+    float: right;
+    font-size: 15px;
+    text-transform: uppercase;
+    margin-left: 12px;
+    line-height: 40px;
+}
+
+    .menu-mo span {
+        color: #0f487e;
+        display: block;
+        float: left;
+        font-size: 26px;
+        line-height: 40px;
+        padding-right: 5px;
+    }
+
+    .menu-mo:hover, .menu-mo:visited, .menu-mo:focus {
+        color: #fff;
+        text-decoration: none;
+    }
+/*========= (*style menu mobile*) ==========*/
+.mobile-panel {
+    background-color: #fff;
+    top: 0;
+    left: 0;
+    position: absolute;
+    height: 100%;
+    width: 240px;
+    /*z-index: 9999;*/
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+
+    .mobile-panel .menu-in {
+        overflow: hidden;
+        height: 100%;
+        position: relative;
+        width: 100%;
+        z-index: 1;
+        background: #fff;
+        -webkit-box-shadow: inset -5px 0 15px 1px rgba(0,0,0,.3);
+        -moz-box-shadow: inset -5px 0 15px 1px rgba(0,0,0,.3);
+        box-shadow: inset -5px 0 15px 1px rgba(0,0,0,.3);
+    }
+
+.mask-panel, #mask-left, #mask-right /* mask khi click ra ngoài menu thì đóng menu */ {
+    background-color: #fff;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    position: fixed;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    height: 100%;
+    width: 100%;
+    z-index: 9998;
+}
+
+.mobile-panel p {
+    padding: 0;
+    margin: 0;
+}
+/** nút close ở menu **/
+.close-menu {
+    background-color: #009ed6;
+    top: 0;
+    position: absolute;
+    overflow: hidden;
+    height: 30px;
+    width: 30px;
+    z-index: 10;
+}
+
+    .close-menu a {
+        color: #fff;
+        display: block;
+        font-size: 22px;
+        line-height: 30px;
+        text-align: center;
+        height: 100%;
+        width: 100%;
+    }
+
+        .close-menu a:hover {
+            text-decoration: none;
+        }
+
+#menumobile .close-menu {
+    right: -30px;
+}
+
+#mobileRight .close-menu {
+    left: -30px;
+}
+
+.mobile-panel .menu-mobile {
+    position: relative;
+    padding: 15px;
+    z-index: 1;
+}
+
+.overflow {
+    overflow: hidden;
+}
+/*===========================*/
+/*================ transition menu =================*/
+.panel-reveal {
+    -ms-transform: none; /* IE 9 */
+    -webkit-transform: none; /* Chrome, Safari, Opera */
+    transform: none;
+}
+
+    .panel-reveal .mobile-panel {
+        -ms-transform: none; /* IE 9 */
+        -webkit-transform: none; /* Chrome, Safari, Opera */
+        transform: none;
+        opacity: 0;
+        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)"; /*IE8+*/
+        filter: alpha(opacity=0); /* IE7 and lower */
+        z-index: -1;
+    }
+
+    .panel-reveal .mobilep-left {
+        -webkit-box-shadow: -5px 0 5px rgba(0, 0, 0, 0.15) inset; /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
+        -moz-box-shadow: -5px 0 5px rgba(0, 0, 0, 0.15) inset; /* Firefox 3.5 - 3.6 */
+        box-shadow: -5px 0 5px rgba(0, 0, 0, 0.15) inset; /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
+        /*left: -100%;*/
+    }
+
+    .panel-reveal .mobilep-right {
+        -webkit-box-shadow: 5px 0 5px rgba(0, 0, 0, 0.15) inset; /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
+        -moz-box-shadow: 5px 0 5px rgba(0, 0, 0, 0.15) inset; /* Firefox 3.5 - 3.6 */
+        box-shadow: 5px 0 5px rgba(0, 0, 0, 0.15) inset; /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
+    }
+    /*================== translate3d đẩy menu ra ========================*/
+    .panel-reveal .open-in {
+        z-index: 1;
+    }
+
+    .panel-reveal .mobilep-right {
+        left: auto;
+        right: 0;
+    }
+
+    .panel-reveal #wrapper-in {
+        -ms-transition: transform 300ms ease 0s; /* IE 9 */
+        -webkit-transition: transform 300ms ease 0s; /* Chrome, Safari, Opera */
+        transition: transform 300ms ease 0s;
+    }
+
+.mobile-active-left #wrapper-in {
+    -ms-transform: translate3d(240px, 0px, 0px); /* IE 9 */
+    -webkit-transform: translate3d(240px, 0px, 0px); /* Chrome, Safari, Opera */
+    transform: translate3d(240px, 0px, 0px);
+}
+
+.mobile-active-left .mask-panel {
+    left: 240px;
+}
+
+.mobile-active-right #wrapper-in {
+    -ms-transform: translate3d(-240px, 0px, 0px); /* IE 9 */
+    -webkit-transform: translate3d(-240px, 0px, 0px); /* Chrome, Safari, Opera */
+    transform: translate3d(-240px, 0px, 0px);
+}
+
+.mobile-active-right .mask-panel {
+    left: auto;
+    right: 240px;
+}
+/*====================================*/
+.menu-mobile .title {
+    color: #000;
+    font-size: 19px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    line-height: 24px;
+}
+/*================= style menu lúc responsive ===================*/
+.menu-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+    .menu-nav > li {
+        padding-top: 1px;
+    }
+
+        .menu-nav > li > a {
+            background-color: #2d3e52;
+            color: #fff;
+            display: block;
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 24px;
+            padding: 7px 25px 7px 10px;
+            text-transform: uppercase;
+            position: relative;
+            border-bottom: 1px solid #fff;
+        }
+
+    .menu-nav .iconar {
+        display: block;
+        font-size: 22px;
+        text-align: right;
+        height: 30px;
+        line-height: 30px;
+        right: 5px;
+        top: 50%;
+        margin-top: -15px;
+        position: absolute;
+        width: 30px;
+        opacity: 0.8;
+    }
+
+    .menu-nav a:hover {
+        text-decoration: none;
+    }
+
+    .menu-nav > li > a:hover, .menu-nav > li:hover > a, .menu-nav > li.active > a {
+        background-color: #de0004;
+    }
+
+    .menu-nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+    }
+
+    .menu-nav > li > ul {
+        background-color: #fff;
+    }
+
+    .menu-nav ul li {
+        padding-top: 1px;
+    }
+
+    .menu-nav ul a {
+        background-color: #636363;
+        color: #fff;
+        display: block;
+        font-size: 15px;
+        line-height: 22px;
+        padding: 5px 10px;
+        position: relative;
+        text-transform: capitalize;
+    }
+
+    .menu-nav ul a {
+        padding-left: 20px;
+    }
+
+    .menu-nav ul ul a {
+        font-size: 14px;
+        line-height: 20px;
+        padding-left: 30px;
+    }
+
+    .menu-nav ul ul ul a {
+    }
+
+        .menu-nav ul ul ul a .iconl {
+            display: none;
+        }
+
+    .menu-nav ul .iconl {
+        display: block;
+        height: 20px;
+        line-height: 18px;
+        left: 10px;
+        top: 6px;
+        position: absolute;
+        width: 14px;
+    }
+
+    .menu-nav ul ul .iconl {
+        left: 20px;
+    }
+
+    .menu-nav ul li > a:hover, .menu-nav ul li:hover > a, .menu-nav ul li.active > a {
+        color: #fef738;
+    }
+
+.menu-mobile .title {
+    font-size: 16px;
+}
+
+#menuProduct > li > a {
+    font-size: 15px;
+}
+
+#menuProduct ul li a {
+    padding-left: 20px;
+}
+/*=================*/
+.menu-mobile .logo {
+    float: none;
+    /*margin: 0 auto 15px;*/
+    padding: 0;
+    /*width: 180px;*/
+    width: 210px;
+    padding-left: 0;
+    margin-bottom: 15px;
+}
+.ipadmo-992 { /* ẩn nút menu */
+    display: none;
+}
+
+.ipadmo-767 {
+    display: none;
+}
+
+@media (max-width: 992px) {
+    .ipadmo-992 { /* hiện menu đt */
+        display: block;
+    }
+
+    .desktop-992 { /* ẩn menu pc */
+        display: none !important;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .ipadmo-767 {
+        display: block;
+    }
+
+    .desktop-767 {
+        display: none;
+    }
+}

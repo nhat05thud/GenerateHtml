@@ -64,16 +64,28 @@ namespace GenerateHtml.Areas.Admin.Controllers
             {
                 if (comp.Id == 0)
                 {
+                    var item = db.HtmlComponentCategories.FirstOrDefault(x =>
+                        x.Name.Trim().ToLower() == comp.Name.Trim().ToLower());
+                    if (item != null)
+                    {
+                        return Json(new { success = false, message = "Category đã tồn tại." }, JsonRequestBehavior.AllowGet);
+                    }
                     var obj = new HtmlComponentCategory
                     {
                         Name = comp.Name
                     };
                     db.HtmlComponentCategories.Add(obj);
                     db.SaveChanges();
-                    return Json(new { success = true, message = "Saved successfully!!!" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = true, message = "Lưu thành công." }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
+                    var item = db.HtmlComponentCategories.FirstOrDefault(x =>
+                        x.Name.Trim().ToLower() == comp.Name.Trim().ToLower() && x.Id != comp.Id);
+                    if (item != null)
+                    {
+                        return Json(new { success = false, message = "Category đã tồn tại." }, JsonRequestBehavior.AllowGet);
+                    }
                     var obj = new HtmlComponentCategory
                     {
                         Id = comp.Id,
@@ -81,7 +93,7 @@ namespace GenerateHtml.Areas.Admin.Controllers
                     };
                     db.Entry(obj).State = EntityState.Modified;
                     db.SaveChanges();
-                    return Json(new { success = true, message = "Updated successfully!!!" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = true, message = "Sửa thành công." }, JsonRequestBehavior.AllowGet);
                 }
             }
         }
@@ -95,9 +107,9 @@ namespace GenerateHtml.Areas.Admin.Controllers
                 {
                     db.HtmlComponentCategories.Remove(comp);
                     db.SaveChanges();
-                    return Json(new { success = true, message = "Deleted successfully!!!" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = true, message = "Xóa thành công." }, JsonRequestBehavior.AllowGet);
                 }
-                return Json(new { success = false, message = "Error!!!" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = "Đã có lỗi xảy ra." }, JsonRequestBehavior.AllowGet);
             }
         }
     }

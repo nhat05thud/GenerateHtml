@@ -12,5 +12,6 @@ namespace Generate.EntityFrameWork.DbContext
         }
         public virtual DbSet<HtmlComponent> HtmlComponents { get; set; }
         public virtual DbSet<HtmlComponentCategory> HtmlComponentCategories { get; set; }
+        public virtual DbSet<Plugin> Plugins { get; set; }
     }
 }

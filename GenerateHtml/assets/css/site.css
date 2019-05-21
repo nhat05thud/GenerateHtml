@@ -1,7 +1,9 @@
 ﻿:focus {
     outline: 0;
 }
-
+p {
+    margin-bottom: 0;
+}
 body {
     padding-top: 0;
     padding-bottom: 0;
@@ -13,7 +15,11 @@ body {
     -o-transition: margin 500ms ease;
     transition: margin 500ms ease;
 }
-
+.custom__width {
+    max-width: 100%;
+    margin: 15px auto !important;
+    display: block;
+}
 .builder.edit .demo {
     font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     margin-left: 0px;
@@ -24,19 +30,23 @@ body {
     position: relative;
     word-wrap: break-word;
     width: 100%;
+    z-index: 1;
 }
 
-    .builder.edit .demo .lyrow .drag {
+    .builder.edit .demo .lyrow .drag,
+    .builder.edit .demo .contentrow .drag,
+    .builder.edit .demo .clone {
         font-size: 13px;
         top: 5px;
         right: 90px;
-        z-index: 10;
+        z-index: 999999;
     }
-
     .builder.edit .demo .column .box .drag {
         top: 5px;
     }
-
+.builder.edit .demo .clone {
+    right: 160px;
+}
     .builder.edit .demo .column .box .configuration {
         position: absolute;
         top: 3px;
@@ -64,7 +74,7 @@ body {
         position: absolute;
         top: 5px;
         right: 5px;
-        z-index: 10;
+        z-index: 999999;
     }
 
         .builder.edit .demo .remove .svg-inline--fa {
@@ -95,7 +105,7 @@ body {
         border: 1px solid #DDDDDD;
         border-radius: 4px 0 4px 0;
         color: #9DA0A4;
-        content: "Container";
+        content: "WrapDemo";
         font-size: 12px;
         font-weight: bold;
         left: -1px;
@@ -112,7 +122,13 @@ body {
     right: 0;
     cursor: pointer;
     padding: 6px;
-    z-index: 10;
+    z-index: 999999;
+}
+.builder.edit .clone {
+    padding: 6px;
+    position: absolute;
+    z-index: 999999;
+    cursor: pointer;
 }
 
     .builder.edit .drag .svg-inline--fa {
@@ -123,7 +139,8 @@ body {
         background: #236f86;
     }
 
-.builder.edit .column:after {
+.builder.edit .column:after,
+.builder.edit .column:before {
     background-color: #F5F5F5;
     border: 1px solid #DDDDDD;
     border-radius: 4px 0 4px 0;
@@ -136,14 +153,30 @@ body {
     position: absolute;
     top: -1px;
 }
-.builder.edit #header.column:after {
+.builder.edit .column:before {
+    bottom: -1px;
+    top: auto;
+    border-radius: 0 4px 0 4px;
+}
+.builder.edit #header.column:after,
+.builder.edit #header.column:before {
     content: "Header";
 }
-.builder.edit #main-content.column:after {
+.builder.edit .custom__width.column:after, 
+.builder.edit .custom__width.column:before {
+    content: "Custom Width";
+}
+.builder.edit #main-content.column:after,
+.builder.edit #main-content.column:before {
     content: "Main Content";
 }
-.builder.edit #footer.column:after {
+.builder.edit #footer.column:after,
+.builder.edit #footer.column:before {
     content: "Footer";
+}
+.builder.edit .container.column:after,
+.builder.edit .container.column:before {
+    content: "Container";
 }
 
 .builder .container {
@@ -284,7 +317,7 @@ body {
 
 .builder .demo .box .view {
     display: block;
-    padding-top: 30px;
+    padding-top: 35px;
 }
 
 .builder .demo .column .navbar-fixed-top {
@@ -318,7 +351,8 @@ body {
         }
 
 .builder .demo .drag,
-.builder .demo .remove {
+.builder .demo .remove,
+.builder .demo .clone {
     filter: alpha(opacity=20);
     opacity: 0.2;
     -webkit-transition: all 500ms ease;
@@ -331,9 +365,11 @@ body {
 .builder .demo .lyrow:hover > .drag,
 .builder .demo .lyrow:hover > .configuration,
 .builder .demo .lyrow:hover > .remove,
+.builder .demo .lyrow:hover .clone,
 .builder .demo .box:hover .drag,
 .builder .demo .box:hover .configuration,
-.builder .demo .box:hover .remove {
+.builder .demo .box:hover .remove,
+.builder .demo .box:hover .clone {
     filter: alpha(opacity=100);
     opacity: 1;
 }
@@ -364,7 +400,8 @@ body {
 }
 
 .builder .box,
-.builder .lyrow {
+.builder .lyrow,
+.builder .contentrow {
     position: relative;
 }
 
@@ -373,7 +410,7 @@ body {
     border: 1px solid #DDDDDD;
     border-radius: 4px 4px 4px 4px;
     margin: 15px 0;
-    padding: 39px 19px 24px;
+    padding: 40px 15px;
     position: relative;
 }
 
@@ -391,6 +428,7 @@ body {
     }
 
     .builder.devpreview .drag,
+    .builder.devpreview .clone,
     .builder.devpreview .configuration,
     .builder.devpreview .remove {
         display: none !important;
@@ -460,7 +498,11 @@ body {
      vertical-align: baseline;
      border-radius: .25rem;
  }
-.builder .sidebar-nav .view, .builder .sidebar-nav .remove, .builder .sidebar-nav .configuration, .builder .sidebar-nav .boxes {
+.builder .sidebar-nav .view, 
+.builder .sidebar-nav .remove, 
+.builder .sidebar-nav .configuration, 
+.builder .sidebar-nav .boxes,
+.builder .sidebar-nav .clone {
     display: none;
 }
 .badge-danger {
@@ -676,8 +718,8 @@ svg:not(:root) {
     position: relative;
     padding-right: 10px;
 }
-.builder .sidebar-nav .nav-parent:hover,
-.builder .sidebar-nav .nav-parent.active {
+.builder .sidebar-nav .nav-parent p:hover,
+.builder .sidebar-nav .nav-parent p.active {
     color: yellow;
 }
 .nav-parent > i {
@@ -685,7 +727,7 @@ svg:not(:root) {
     right: 0;
     top: 5px;
 }
-.builder .sidebar-nav .nav-parent.active > ul {
+.builder .sidebar-nav .nav-parent p.active ~ ul {
     display: block;
 }
 .nav-parent > ul {
@@ -699,6 +741,7 @@ svg:not(:root) {
     background: #111;
     padding: 10px;
     display: none;
+    z-index: 999;
 }
 .nav-parent > ul li {
     list-style: none;
@@ -740,3 +783,24 @@ svg:not(:root) {
         margin: auto;
         opacity: 0;
     }
+.wrap-plugins {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 999;
+    background: #fff;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    width: 250px;
+    display: none;
+}
+.wrap-plugins.active {
+    display: block;
+}
+.wrap-plugins label {
+    display: block;
+}
+.wrap-plugins label input {
+    vertical-align: middle;
+}

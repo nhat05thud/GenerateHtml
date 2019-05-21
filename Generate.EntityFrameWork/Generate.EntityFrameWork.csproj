@@ -54,9 +54,14 @@
     <Compile Include="Migrations\201905100652139_InitGenarateHtmlTable.Designer.cs">
       <DependentUpon>201905100652139_InitGenarateHtmlTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201905170454466_AddTablePlugin.cs" />
+    <Compile Include="Migrations\201905170454466_AddTablePlugin.Designer.cs">
+      <DependentUpon>201905170454466_AddTablePlugin.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\HtmlComponent.cs" />
     <Compile Include="Models\HtmlComponentCategory.cs" />
+    <Compile Include="Models\Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -66,6 +71,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201905100652139_InitGenarateHtmlTable.resx">
       <DependentUpon>201905100652139_InitGenarateHtmlTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905170454466_AddTablePlugin.resx">
+      <DependentUpon>201905170454466_AddTablePlugin.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

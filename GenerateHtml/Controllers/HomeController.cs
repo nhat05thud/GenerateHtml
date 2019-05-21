@@ -37,6 +37,11 @@ namespace GenerateHtml.Controllers
                         }).ToList()
                     })
                     .ToList();
+                ViewBag.Plugins = db.Plugins.Select(x => new PluginViewModel
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                }).ToList();
                 return View(compList);
             }
         }
@@ -53,13 +58,33 @@ namespace GenerateHtml.Controllers
                         ScriptPath = x.ScriptPath,
                         CssPath = x.CssPath
                     }).FirstOrDefault(x => x.Id == elementId);
+                var strHtml = string.Empty;
+                if (compList != null)
+                {
+                    try
+                    {
+                        var fileStream = new FileStream(Server.MapPath(Path.Combine(Utils.UploadFolder, Utils.CssPath, compList.CssPath)), FileMode.Open, FileAccess.Read);
+                        using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+                        {
+                            var textFile = streamReader.ReadToEnd();
+                            textFile = textFile.Replace("../images/", "/Media/" + compList.Id + "/");
+                            compList.CssPath = textFile;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        throw;
+                    }
+                    strHtml = compList.HtmlBody;
+                }
                 return compList != null
-                    ? Json(new { success = true, css = compList.CssPath, script = compList.ScriptPath, html = compList.HtmlBody }, JsonRequestBehavior.AllowGet)
+                    ? Json(new { success = true, css = compList.CssPath, script = compList.ScriptPath, html = strHtml }, JsonRequestBehavior.AllowGet)
                     : Json(new { success = false, message = "an error occurred !!!" }, JsonRequestBehavior.AllowGet);
             }
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult HandleSaveHtmlFile(string html, string elementIds, string websiteName, string fileName)
+        public ActionResult HandleSaveHtmlFile(string html, string elementIds, string websiteName, string fileName, string pluginIds)
         {
             using (var db = new GenerateHtmlDbContext())
             {
@@ -72,6 +97,19 @@ namespace GenerateHtml.Controllers
                         ScriptPath = x.ScriptPath,
                         CssPath = x.CssPath
                     }).Where(x => elementIds.Contains(x.Id.ToString())).ToList();
+                var listPlugin = new List<PluginViewModel>();
+                if (!string.IsNullOrEmpty(pluginIds))
+                {
+                    var ids = pluginIds.Split(',');
+                    listPlugin = db.Plugins
+                        .Select(x => new PluginViewModel
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                            ScriptPath = x.ScriptPath,
+                            CssPath = x.CssPath
+                        }).Where(x => ids.Contains(x.Id.ToString())).ToList();
+                }
                 var listStyleSheetLinks = compList.Where(x => x.CssPath != null).Select(x => x.CssPath).ToList();
                 var strStyleSheets = string.Empty;
                 foreach (var item in listStyleSheetLinks)
@@ -79,7 +117,6 @@ namespace GenerateHtml.Controllers
                     strStyleSheets += "<link href='" + Path.Combine(Utils.CssPath, item).Replace("\\", "/") +
                                       "' rel='stylesheet' />\n";
                 }
-
                 var listScriptLinks = compList.Where(x => x.ScriptPath != null).Select(x => x.ScriptPath).ToList();
                 var strScript = string.Empty;
                 foreach (var item in listScriptLinks)
@@ -87,7 +124,8 @@ namespace GenerateHtml.Controllers
                     strScript += "<script src='" + Path.Combine(Utils.ScriptsPath, item).Replace("\\", "/") +
                                  "'></script>\n";
                 }
-
+                var libCssLinks = listPlugin.Where(x=>x.CssPath != null).Select(x => x.CssPath).ToList();
+                var libScriptLinks = listPlugin.Where(x=>x.ScriptPath != null).Select(x => x.ScriptPath).ToList();
                 // replace html body vào layout
                 var textFile = ReplaceTextFile(strStyleSheets, html, strScript);
                 // tạo file html
@@ -96,6 +134,11 @@ namespace GenerateHtml.Controllers
                 GenarateCss(websiteName, listStyleSheetLinks);
                 // chép file script vào folder
                 GenarateScript(websiteName, listScriptLinks);
+
+                foreach (var item in compList)
+                {
+                    DirectoryCopy(Server.MapPath(Path.Combine(Utils.MediaFolder, item.Id.ToString()).Replace("\\", "/")), Server.MapPath(Path.Combine(Utils.DownLoadFolder, websiteName, Utils.ImagePath)), true);
+                }
                 return Json(new { success = true, message = "Add new html page success !!!" }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -125,6 +168,46 @@ namespace GenerateHtml.Controllers
                 Console.WriteLine(e);
                 throw;
             }
+        }
+        public ActionResult HandleAddPlugins(string pluginIds)
+        {
+            if (!string.IsNullOrEmpty(pluginIds))
+            {
+                try
+                {
+                    using (var db = new GenerateHtmlDbContext())
+                    {
+                        var ids = pluginIds.Split(',');
+                        var compList = db.Plugins
+                            .Select(x => new PluginViewModel
+                            {
+                                Id = x.Id,
+                                Name = x.Name,
+                                ScriptPath = x.ScriptPath,
+                                CssPath = x.CssPath
+                            }).Where(x => ids.Contains(x.Id.ToString())).ToList();
+                        var cssFiles = new List<string>();
+                        var scriptFiles = new List<string>();
+                        if (compList.Any())
+                        {
+                            foreach (var item in compList)
+                            {
+                                cssFiles.Add(Path.Combine(Utils.LibsFolder, ChangeSymbol.DoChange(item.Name), Utils.CssPath, item.CssPath).Replace("\\", "/"));
+                                scriptFiles.Add(Path.Combine(Utils.LibsFolder, ChangeSymbol.DoChange(item.Name), Utils.ScriptsPath, item.ScriptPath).Replace("\\", "/"));
+                            }
+                        }
+
+                        return Json(new {success = true, css = cssFiles, script = scriptFiles }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+
+            return null;
         }
         private void DeleteAllFiles()
         {
@@ -265,9 +348,9 @@ namespace GenerateHtml.Controllers
                 using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
                 {
                     var textFile = streamReader.ReadToEnd();
-                    textFile = textFile.Replace(Utils.LayoutStyleSheet, strStyleSheets);
+                    textFile = textFile.Replace(Utils.LayoutStyleSheet, strStyleSheets.Replace("'","\""));
                     textFile = textFile.Replace(Utils.LayoutBody, html);
-                    textFile = textFile.Replace(Utils.LayoutScript, strScript);
+                    textFile = textFile.Replace(Utils.LayoutScript, strScript.Replace("'", "\""));
                     return textFile;
                 }
             }

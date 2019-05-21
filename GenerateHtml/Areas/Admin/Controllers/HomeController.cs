@@ -40,13 +40,12 @@ namespace GenerateHtml.Areas.Admin.Controllers
         {
             using (var db = new GenerateHtmlDbContext())
             {
-                var category = db.HtmlComponentCategories
+                ViewBag.Category = db.HtmlComponentCategories
                     .Select(x => new SelectListItem
                     {
                         Value = x.Id.ToString(),
                         Text = x.Name
                     }).ToList();
-                ViewBag.Category = category;
                 if (id == 0)
                 {
                     return View(new HtmlComponentViewModel());
@@ -63,108 +62,128 @@ namespace GenerateHtml.Areas.Admin.Controllers
                         CategoryId = x.CategoryId,
                         CategoryName = x.HtmlComponentCategory.Name
                     }).FirstOrDefault(x => x.Id == id);
+                if (compList != null && Directory.Exists(Server.MapPath(@"/Media/" + id)))
+                {
+                    var di = new DirectoryInfo(Server.MapPath(@"/Media/" + id));
+                    var count = di.GetFiles().Length;
+                    compList.MediaInfo = count + "files";
+                }
                 return View(compList);
             }
         }
         [HttpPost, ValidateInput(false)]
-        public ActionResult AddOrEdit(HtmlComponentViewModel comp, HttpPostedFileBase styleSheetFile, HttpPostedFileBase scriptFile, HttpPostedFileBase imageFile)
+        public ActionResult AddOrEdit(HtmlComponentViewModel comp, HttpPostedFileBase styleSheetFile, HttpPostedFileBase scriptFile, HttpPostedFileBase imageFile, List<HttpPostedFileBase> mediaFiles)
         {
-            using (var db = new GenerateHtmlDbContext())
+            try
             {
-                var category = db.HtmlComponentCategories
-                    .Select(x => new SelectListItem
-                    {
-                        Value = x.Id.ToString(),
-                        Text = x.Name
-                    }).ToList();
-                ViewBag.Category = category;
-                if (!ModelState.IsValid)
+                using (var db = new GenerateHtmlDbContext())
                 {
-                    return PartialView("~/Areas/Admin/Views/Home/_form.cshtml", comp);
-                }
-                if (comp.Id == 0)
-                {
-                    var obj = new HtmlComponent
+                    ViewBag.Category = db.HtmlComponentCategories.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name }).ToList();
+                    if (!ModelState.IsValid)
                     {
-                        Name = comp.Name,
-                        HtmlBody = comp.HtmlBody,
-                        ScriptPath = comp.ScriptPath,
-                        CssPath = comp.CssPath,
-                        ImageName = comp.ImageName,
-                        CategoryId = comp.CategoryId
-                    };
-                    db.HtmlComponents.Add(obj);
-                    db.SaveChanges();
-                    if (imageFile != null)
-                    {
-                        var imageFilePath = HandleUploadFile(obj.Id, imageFile, Utils.ImagePath);
-                        obj.ImageName = imageFilePath;
+                        return PartialView("~/Areas/Admin/Views/Home/_form.cshtml", comp);
                     }
-                    if (styleSheetFile != null && Path.GetExtension(styleSheetFile.FileName) == ".css")
-                    {
-                        var cssFilePath = HandleUploadFile(obj.Id, styleSheetFile, Utils.CssPath);
-                        obj.CssPath = cssFilePath;
-                    }
-                    if (scriptFile != null && Path.GetExtension(scriptFile.FileName) == ".js")
-                    {
-                        var scriptFilePath = HandleUploadFile(obj.Id, scriptFile, Utils.ScriptsPath);
-                        obj.ScriptPath = scriptFilePath;
-                    }
-                    db.Entry(obj).State = EntityState.Modified;
-                    db.SaveChanges();
-                    return Json(new { success = true, message = "Saved successfully!!!" }, JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    var componentItem = db.HtmlComponents
-                        .Select(x => new HtmlComponentViewModel
-                        {
-                            Id = x.Id,
-                            ScriptPath = x.ScriptPath,
-                            CssPath = x.CssPath,
-                            ImageName = x.ImageName,
-                            CategoryId = comp.CategoryId
-                        }).FirstOrDefault(x => x.Id == comp.Id);
-                    if (componentItem != null)
+                    if (comp.Id == 0)
                     {
                         var obj = new HtmlComponent
                         {
-                            Id = comp.Id,
                             Name = comp.Name,
                             HtmlBody = comp.HtmlBody,
-                            CssPath = componentItem.CssPath,
-                            ScriptPath = componentItem.ScriptPath,
-                            ImageName = componentItem.ImageName,
-                            CategoryId = componentItem.CategoryId
+                            ScriptPath = comp.ScriptPath,
+                            CssPath = comp.CssPath,
+                            ImageName = comp.ImageName,
+                            CategoryId = comp.CategoryId
                         };
-
+                        db.HtmlComponents.Add(obj);
+                        db.SaveChanges();
                         if (imageFile != null)
                         {
-                            HandleDeleteFile(comp.ImageName, Utils.ImagePath);
                             var imageFilePath = HandleUploadFile(obj.Id, imageFile, Utils.ImagePath);
                             obj.ImageName = imageFilePath;
                         }
                         if (styleSheetFile != null && Path.GetExtension(styleSheetFile.FileName) == ".css")
                         {
-                            HandleDeleteFile(comp.CssPath, Utils.CssPath);
                             var cssFilePath = HandleUploadFile(obj.Id, styleSheetFile, Utils.CssPath);
                             obj.CssPath = cssFilePath;
                         }
                         if (scriptFile != null && Path.GetExtension(scriptFile.FileName) == ".js")
                         {
-                            HandleDeleteFile(comp.ScriptPath, Utils.ScriptsPath);
                             var scriptFilePath = HandleUploadFile(obj.Id, scriptFile, Utils.ScriptsPath);
                             obj.ScriptPath = scriptFilePath;
                         }
+                        if (mediaFiles.Any())
+                        {
+                            HandleMediaImages(obj.Id, mediaFiles);
+                        }
                         db.Entry(obj).State = EntityState.Modified;
                         db.SaveChanges();
-                        return Json(new { success = true, message = "Updated successfully!!!" }, JsonRequestBehavior.AllowGet);
+                        return Json(new { success = true, message = "Lưu thành công." }, JsonRequestBehavior.AllowGet);
                     }
-                    return Json(new { success = false, message = "Updated fail!!!" }, JsonRequestBehavior.AllowGet);
+                    else
+                    {
+                        var item = db.HtmlComponents.FirstOrDefault(x => x.Id == comp.Id);
+                        if (item != null)
+                        {
+                            item.Name = comp.Name;
+                            item.HtmlBody = comp.HtmlBody;
+                            item.CategoryId = comp.CategoryId;
+                            if (imageFile != null)
+                            {
+                                HandleDeleteFile(comp.ImageName, Utils.ImagePath);
+                                var imageFilePath = HandleUploadFile(item.Id, imageFile, Utils.ImagePath);
+                                item.ImageName = imageFilePath;
+                            }
+                            if (styleSheetFile != null && Path.GetExtension(styleSheetFile.FileName) == ".css")
+                            {
+                                HandleDeleteFile(comp.CssPath, Utils.CssPath);
+                                var cssFilePath = HandleUploadFile(item.Id, styleSheetFile, Utils.CssPath);
+                                item.CssPath = cssFilePath;
+                            }
+                            if (scriptFile != null && Path.GetExtension(scriptFile.FileName) == ".js")
+                            {
+                                HandleDeleteFile(comp.ScriptPath, Utils.ScriptsPath);
+                                var scriptFilePath = HandleUploadFile(item.Id, scriptFile, Utils.ScriptsPath);
+                                item.ScriptPath = scriptFilePath;
+                            }
+                            if (mediaFiles.Any())
+                            {
+                                HandleMediaImages(item.Id, mediaFiles);
+                            }
+                            db.Entry(item).State = EntityState.Modified;
+                            db.SaveChanges();
+                            return Json(new { success = true, message = "Sửa thành công." }, JsonRequestBehavior.AllowGet);
+                        }
+                        return Json(new { success = false, message = "Sửa thất bại" }, JsonRequestBehavior.AllowGet);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Sửa thất bại" }, JsonRequestBehavior.AllowGet);
             }
         }
 
+        private void HandleMediaImages(int id, List<HttpPostedFileBase> mediaFiles)
+        {
+            var mediaFolderPath = Server.MapPath(@"/Media");
+            var mediaItemPath = Path.Combine(mediaFolderPath, id.ToString());
+            if (!Directory.Exists(mediaItemPath))
+            {
+                Directory.CreateDirectory(mediaItemPath);
+            }
+            foreach (var item in mediaFiles)
+            {
+                if (item != null && Utils.CheckExtensionImage(item.FileName))
+                {
+                    var stream = item.InputStream;
+                    var path = Path.Combine(mediaItemPath, item.FileName);
+                    using (var fileStream = System.IO.File.Create(path))
+                    {
+                        stream.CopyTo(fileStream);
+                    }
+                }
+            }
+        }
         private void HandleDeleteFile(string path, string folderName)
         {
             var uploadPathExists = Directory.Exists(Server.MapPath(@"/Uploads"));
@@ -196,7 +215,6 @@ namespace GenerateHtml.Areas.Admin.Controllers
             {
                 stream.CopyTo(fileStream);
             }
-
             return fileName;
         }
         [HttpPost]
@@ -209,9 +227,9 @@ namespace GenerateHtml.Areas.Admin.Controllers
                 {
                     db.HtmlComponents.Remove(comp);
                     db.SaveChanges();
-                    return Json(new { success = true, message = "Deleted successfully!!!" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = true, message = "Xóa thành công." }, JsonRequestBehavior.AllowGet);
                 }
-                return Json(new { success = false, message = "Error!!!" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = "Đã có lỗi xảy ra." }, JsonRequestBehavior.AllowGet);
             }
         }
     }
