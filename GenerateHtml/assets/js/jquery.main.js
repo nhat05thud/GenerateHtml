@@ -148,7 +148,7 @@ function gridSystemGenerator() {
             if (!invalidValues) {
                 if (parseInt(value) <= 0) invalidValues = true;
                 sum = sum + parseInt(value);
-                src += '<div class="col-md-' + value + ' column"></div>';
+                src += '<div class="col-lg-' + value + ' column"></div>';
             }
         });
         if (sum === 12 && !invalidValues) {

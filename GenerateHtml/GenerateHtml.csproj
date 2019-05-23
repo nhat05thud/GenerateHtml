@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -124,14 +123,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
-      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\CategoryController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Admin\Controllers\PluginController.cs" />
     <Compile Include="ClassHelpers\ChangeSymbol.cs" />
     <Compile Include="ClassHelpers\HtmlHelper.cs" />
     <Compile Include="ClassHelpers\Utils.cs" />
@@ -145,6 +140,7 @@
     </Compile>
     <Compile Include="Models\HtmlComponentCategoryViewModel.cs" />
     <Compile Include="Models\HtmlComponentViewModel.cs" />
+    <Compile Include="Models\PluginViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -776,6 +772,8 @@
     <Content Include="Content\themes\base\tooltip.css" />
     <Content Include="css\fonts.css" />
     <Content Include="css\owl.carousel.min.css" />
+    <Content Include="CurrentLayout\assets\css\custom-master.css" />
+    <Content Include="CurrentLayout\assets\scripts\custom-master.js" />
     <Content Include="CurrentLayout\layout.html" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -800,11 +798,10 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Images\" />
     <Folder Include="Areas\Admin\Models\" />
-    <Folder Include="CurrentLayout\assets\css\" />
     <Folder Include="CurrentLayout\assets\fonts\" />
     <Folder Include="CurrentLayout\assets\images\" />
-    <Folder Include="CurrentLayout\assets\scripts\" />
     <Folder Include="Download\" />
+    <Folder Include="Media\" />
     <Folder Include="Scripts\" />
   </ItemGroup>
   <ItemGroup>
@@ -824,7 +821,11 @@
     <Content Include="assets\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="assets\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="assets\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Areas\Admin\Views\Plugin\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Plugin\AddOrEdit.cshtml" />
+    <Content Include="Areas\Admin\Views\Plugin\_form.cshtml" />
     <None Include="packages.config" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Generate.EntityFrameWork\Generate.EntityFrameWork.csproj">
@@ -860,12 +861,6 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

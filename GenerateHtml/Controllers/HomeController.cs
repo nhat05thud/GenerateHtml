@@ -124,17 +124,22 @@ namespace GenerateHtml.Controllers
                     strScript += "<script src='" + Path.Combine(Utils.ScriptsPath, item).Replace("\\", "/") +
                                  "'></script>\n";
                 }
-                var libCssLinks = listPlugin.Where(x=>x.CssPath != null).Select(x => x.CssPath).ToList();
-                var libScriptLinks = listPlugin.Where(x=>x.ScriptPath != null).Select(x => x.ScriptPath).ToList();
+                var libCssLinks = listPlugin.Where(x=>x.CssPath != null).Select(x => new PluginItemViewModel { Name = x.Name, FilePath = x.CssPath });
+                var libScriptLinks = listPlugin.Where(x=>x.ScriptPath != null).Select(x => new PluginItemViewModel { Name = x.Name, FilePath = x.ScriptPath });
                 // replace html body vào layout
-                var textFile = ReplaceTextFile(strStyleSheets, html, strScript);
+                var textFile = ReplaceTextFile(strStyleSheets, html, strScript, libCssLinks, libScriptLinks);
                 // tạo file html
                 GenarateHtmlFile(textFile, websiteName, fileName);
                 // chép file css vào folder
                 GenarateCss(websiteName, listStyleSheetLinks);
                 // chép file script vào folder
                 GenarateScript(websiteName, listScriptLinks);
-
+                if (listPlugin.Any())
+                {
+                    var libsName = listPlugin.Where(x => x.ScriptPath != null).Select(x => x.Name);
+                    // chép libs vào folder
+                    GenarateLibsFolder(websiteName, libsName);
+                }
                 foreach (var item in compList)
                 {
                     DirectoryCopy(Server.MapPath(Path.Combine(Utils.MediaFolder, item.Id.ToString()).Replace("\\", "/")), Server.MapPath(Path.Combine(Utils.DownLoadFolder, websiteName, Utils.ImagePath)), true);
@@ -244,7 +249,11 @@ namespace GenerateHtml.Controllers
             foreach (var file in files)
             {
                 var temppath = Path.Combine(destDirName, file.Name);
-                file.CopyTo(temppath, false);
+                var fileExits = System.IO.File.Exists(temppath);
+                if (!fileExits)
+                {
+                    file.CopyTo(temppath, false);
+                }
             }
 
             // If copying subdirectories, copy them and their contents to new location.
@@ -283,6 +292,15 @@ namespace GenerateHtml.Controllers
                 {
                     GenarateFile(fullItemLink, path);
                 }
+            }
+        }
+        private void GenarateLibsFolder(string websiteName, IEnumerable<string> libsName)
+        {
+            foreach (var item in libsName)
+            {
+                var folderLibInDownLoad = Server.MapPath(Path.Combine(Utils.DownLoadFolder, websiteName, "libs", ChangeSymbol.DoChange(item)));
+                // copy tất cả file mặc định vào folder mới
+                DirectoryCopy(Server.MapPath(Path.Combine(Utils.LibsFolder, ChangeSymbol.DoChange(item))), folderLibInDownLoad, true);
             }
         }
         private void GenarateHtmlFile(string textFile, string websiteName, string fileName)
@@ -340,7 +358,7 @@ namespace GenerateHtml.Controllers
             }
             return websitePath;
         }
-        private string ReplaceTextFile(string strStyleSheets, string html, string strScript)
+        private string ReplaceTextFile(string strStyleSheets, string html, string strScript, IEnumerable<PluginItemViewModel> libCssLinks, IEnumerable<PluginItemViewModel> libScriptLinks)
         {
             try
             {
@@ -348,8 +366,22 @@ namespace GenerateHtml.Controllers
                 using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
                 {
                     var textFile = streamReader.ReadToEnd();
+                    var libCss = string.Empty;
+                    foreach (var item in libCssLinks)
+                    {
+                        libCss += "<link href='" + Path.Combine("libs", ChangeSymbol.DoChange(item.Name), Utils.CssPath, item.FilePath).Replace("\\", "/") +
+                            "' rel='stylesheet' />\n";
+                    }
+                    textFile = textFile.Replace(Utils.LayoutLibCss, libCss.Replace("'", "\""));
                     textFile = textFile.Replace(Utils.LayoutStyleSheet, strStyleSheets.Replace("'","\""));
                     textFile = textFile.Replace(Utils.LayoutBody, html);
+                    var libScript = string.Empty;
+                    foreach (var item in libScriptLinks)
+                    {
+                        libScript += "<script src='" + Path.Combine("libs", ChangeSymbol.DoChange(item.Name), Utils.ScriptsPath, item.FilePath).Replace("\\", "/") +
+                                  "'></script>\n";
+                    }
+                    textFile = textFile.Replace(Utils.LayoutLibScript, libScript.Replace("'", "\""));
                     textFile = textFile.Replace(Utils.LayoutScript, strScript.Replace("'", "\""));
                     return textFile;
                 }

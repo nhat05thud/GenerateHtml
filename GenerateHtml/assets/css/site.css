@@ -178,6 +178,54 @@ body {
 .builder.edit .container.column:before {
     content: "Container";
 }
+.builder.edit .column.col-md-1:after,
+.builder.edit .column.col-md-1:before {
+    content: "Column-1";
+}
+.builder.edit .column.col-md-2:after,
+.builder.edit .column.col-md-2:before {
+    content: "Column-2";
+}
+.builder.edit .column.col-md-3:after,
+.builder.edit .column.col-md-3:before {
+    content: "Column-3";
+}
+.builder.edit .column.col-md-4:after,
+.builder.edit .column.col-md-4:before {
+    content: "Column-4";
+}
+.builder.edit .column.col-md-5:after,
+.builder.edit .column.col-md-5:before {
+    content: "Column-5";
+}
+.builder.edit .column.col-md-6:after,
+.builder.edit .column.col-md-6:before {
+    content: "Column-6";
+}
+.builder.edit .column.col-md-7:after,
+.builder.edit .column.col-md-7:before {
+    content: "Column-7";
+}
+.builder.edit .column.col-md-8:after,
+.builder.edit .column.col-md-8:before {
+    content: "Column-8";
+}
+.builder.edit .column.col-md-9:after,
+.builder.edit .column.col-md-9:before {
+    content: "Column-9";
+}
+.builder.edit .column.col-md-10:after,
+.builder.edit .column.col-md-10:before {
+    content: "Column-10";
+}
+.builder.edit .column.col-md-11:after,
+.builder.edit .column.col-md-11:before {
+    content: "Column-11";
+}
+.builder.edit .column.col-md-12:after,
+.builder.edit .column.col-md-12:before {
+    content: "Column-12";
+}
 
 .builder .container {
     width: auto;
