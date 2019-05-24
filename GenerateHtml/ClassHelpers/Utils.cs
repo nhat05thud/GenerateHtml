@@ -25,6 +25,8 @@ namespace GenerateHtml.ClassHelpers
         public static readonly string FontFolder = "fonts";
         public static readonly string DownLoadFolder = "/Download";
         public static readonly string MediaFolder = "/Media";
+        public static readonly string ComponentsCss = "Components.css";
+        public static readonly string ComponentsScript = "Components.js";
         public static readonly List<string> ImageAvai = new List<string>
         {
             ".jpg",".png",".jpeg",".JPEG", ".JPG",".PNG",".gif"

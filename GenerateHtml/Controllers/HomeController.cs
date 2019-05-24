@@ -63,12 +63,15 @@ namespace GenerateHtml.Controllers
                 {
                     try
                     {
-                        var fileStream = new FileStream(Server.MapPath(Path.Combine(Utils.UploadFolder, Utils.CssPath, compList.CssPath)), FileMode.Open, FileAccess.Read);
-                        using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+                        if (!string.IsNullOrEmpty(compList.CssPath))
                         {
-                            var textFile = streamReader.ReadToEnd();
-                            textFile = textFile.Replace("../images/", "/Media/" + compList.Id + "/");
-                            compList.CssPath = textFile;
+                            var fileStream = new FileStream(Server.MapPath(Path.Combine(Utils.UploadFolder, Utils.CssPath, compList.CssPath)), FileMode.Open, FileAccess.Read);
+                            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+                            {
+                                var textFile = streamReader.ReadToEnd();
+                                textFile = textFile.Replace("../images/", "/Media/" + compList.Id + "/");
+                                compList.CssPath = textFile;
+                            }
                         }
                     }
                     catch (Exception e)
@@ -111,29 +114,21 @@ namespace GenerateHtml.Controllers
                         }).Where(x => ids.Contains(x.Id.ToString())).ToList();
                 }
                 var listStyleSheetLinks = compList.Where(x => x.CssPath != null).Select(x => x.CssPath).ToList();
-                var strStyleSheets = string.Empty;
-                foreach (var item in listStyleSheetLinks)
-                {
-                    strStyleSheets += "<link href='" + Path.Combine(Utils.CssPath, item).Replace("\\", "/") +
-                                      "' rel='stylesheet' />\n";
-                }
+                var strStyleSheets = "<link href='" + Path.Combine(Utils.CssPath, Utils.ComponentsCss).Replace("\\", "/") +
+                                      "' rel='stylesheet' />";
                 var listScriptLinks = compList.Where(x => x.ScriptPath != null).Select(x => x.ScriptPath).ToList();
-                var strScript = string.Empty;
-                foreach (var item in listScriptLinks)
-                {
-                    strScript += "<script src='" + Path.Combine(Utils.ScriptsPath, item).Replace("\\", "/") +
-                                 "'></script>\n";
-                }
-                var libCssLinks = listPlugin.Where(x=>x.CssPath != null).Select(x => new PluginItemViewModel { Name = x.Name, FilePath = x.CssPath });
-                var libScriptLinks = listPlugin.Where(x=>x.ScriptPath != null).Select(x => new PluginItemViewModel { Name = x.Name, FilePath = x.ScriptPath });
+                var strScript = "<script src='" + Path.Combine(Utils.ScriptsPath, Utils.ComponentsScript).Replace("\\", "/") +
+                                 "'></script>";
+                var libCssLinks = listPlugin.Where(x => x.CssPath != null).Select(x => new PluginItemViewModel { Name = x.Name, FilePath = x.CssPath });
+                var libScriptLinks = listPlugin.Where(x => x.ScriptPath != null).Select(x => new PluginItemViewModel { Name = x.Name, FilePath = x.ScriptPath });
                 // replace html body vào layout
                 var textFile = ReplaceTextFile(strStyleSheets, html, strScript, libCssLinks, libScriptLinks);
                 // tạo file html
                 GenarateHtmlFile(textFile, websiteName, fileName);
                 // chép file css vào folder
-                GenarateCss(websiteName, listStyleSheetLinks);
+                GenarateFile(websiteName, listStyleSheetLinks, Utils.CssPath, Utils.ComponentsCss);
                 // chép file script vào folder
-                GenarateScript(websiteName, listScriptLinks);
+                GenarateFile(websiteName, listScriptLinks, Utils.ScriptsPath, Utils.ComponentsScript);
                 if (listPlugin.Any())
                 {
                     var libsName = listPlugin.Where(x => x.ScriptPath != null).Select(x => x.Name);
@@ -202,7 +197,7 @@ namespace GenerateHtml.Controllers
                             }
                         }
 
-                        return Json(new {success = true, css = cssFiles, script = scriptFiles }, JsonRequestBehavior.AllowGet);
+                        return Json(new { success = true, css = cssFiles, script = scriptFiles }, JsonRequestBehavior.AllowGet);
                     }
                 }
                 catch (Exception e)
@@ -266,33 +261,77 @@ namespace GenerateHtml.Controllers
                 }
             }
         }
-        private void GenarateCss(string websiteName, IEnumerable<string> listStyleSheetLinks)
+        //private void GenarateCss(string websiteName, IEnumerable<string> listStyleSheetLinks)
+        //{
+        //    var websitePath = GetLocation(websiteName);
+        //    var cssPath = Utils.CreateDirectoryIfNotExists(websitePath, Utils.CssPath, false);
+        //    var memoryStream = new MemoryStream();
+        //    foreach (var item in listStyleSheetLinks)
+        //    {
+        //        var fullItemLink = Path.Combine(Utils.UploadFolder, Utils.CssPath, item);
+        //        var path = Path.Combine(cssPath, item);
+        //        var stream = GenarateFile(fullItemLink, path);
+        //        memoryStream.Write(stream.GetBuffer(), 0, (int)stream.Length);
+        //    }
+        //    using (var fs = new FileStream(Path.Combine(cssPath, Utils.ComponentsCss), FileMode.OpenOrCreate))
+        //    {
+        //        memoryStream.WriteTo(fs);
+        //        fs.Flush();
+        //    }
+        //}
+        //private void GenarateScript(string websiteName, List<string> listScriptLinks)
+        //{
+        //    var websitePath = GetLocation(websiteName);
+        //    var scriptsPath = Utils.CreateDirectoryIfNotExists(websitePath, Utils.ScriptsPath, false);
+        //    var memoryStream = new MemoryStream();
+        //    foreach (var item in listScriptLinks)
+        //    {
+        //        var fullItemLink = Path.Combine(Utils.UploadFolder, Utils.ScriptsPath, item);
+        //        var path = Path.Combine(scriptsPath, item);
+        //        var stream = GenarateFile(fullItemLink, path);
+        //        memoryStream.Write(stream.GetBuffer(), 0, (int)stream.Length);
+        //    }
+        //    using (var fs = new FileStream(Path.Combine(scriptsPath, Utils.ScriptsPath), FileMode.OpenOrCreate))
+        //    {
+        //        memoryStream.WriteTo(fs);
+        //        fs.Flush();
+        //    }
+        //}
+        private void GenarateFile(string websiteName, IEnumerable<string> listFile, string folderName, string completeFileName)
         {
             var websitePath = GetLocation(websiteName);
-            var cssPath = Utils.CreateDirectoryIfNotExists(websitePath, Utils.CssPath, false);
-            foreach (var item in listStyleSheetLinks)
+            var localPath = Utils.CreateDirectoryIfNotExists(websitePath, folderName, false);
+            var memoryStream = new MemoryStream();
+            foreach (var item in listFile)
             {
-                var fullItemLink = Path.Combine(Utils.UploadFolder, Utils.CssPath, item);
-                var path = Path.Combine(cssPath, item);
-                if (!System.IO.File.Exists(path))
-                {
-                    GenarateFile(fullItemLink, path);
-                }
+                var fullItemLink = Path.Combine(Utils.UploadFolder, folderName, item);
+                var path = Path.Combine(localPath, item);
+                var stream = GenarateMemoryStream(fullItemLink, path);
+                memoryStream.Write(stream.GetBuffer(), 0, (int)stream.Length);
+            }
+            using (var fs = new FileStream(Path.Combine(localPath, completeFileName), FileMode.OpenOrCreate))
+            {
+                memoryStream.WriteTo(fs);
+                fs.Flush();
             }
         }
-        private void GenarateScript(string websiteName, List<string> listScriptLinks)
+        private MemoryStream GenarateMemoryStream(string linkFile, string path)
         {
-            var websitePath = GetLocation(websiteName);
-            var scriptsPath = Utils.CreateDirectoryIfNotExists(websitePath, Utils.ScriptsPath, false);
-            foreach (var item in listScriptLinks)
+            var fileStream = new FileStream(Server.MapPath(linkFile), FileMode.Open, FileAccess.Read);
+            var mstream = new MemoryStream();
+            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
             {
-                var fullItemLink = Path.Combine(Utils.UploadFolder, Utils.ScriptsPath, item);
-                var path = Path.Combine(scriptsPath, item);
-                if (!System.IO.File.Exists(path))
+                var textFile = streamReader.ReadToEnd();
+                using (var stream = new MemoryStream())
                 {
-                    GenarateFile(fullItemLink, path);
+                    var writer = new StreamWriter(stream);
+                    writer.Write(textFile);
+                    writer.Flush();
+                    stream.Seek(0, SeekOrigin.Begin);
+                    mstream.Write(stream.GetBuffer(), 0, (int)stream.Length);
                 }
             }
+            return mstream;
         }
         private void GenarateLibsFolder(string websiteName, IEnumerable<string> libsName)
         {
@@ -325,26 +364,6 @@ namespace GenerateHtml.Controllers
                 }
             }
         }
-        private void GenarateFile(string linkFile, string path)
-        {
-            var fileStream = new FileStream(Server.MapPath(linkFile), FileMode.Open, FileAccess.Read);
-            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
-            {
-                var textFile = streamReader.ReadToEnd();
-                using (var stream = new MemoryStream())
-                {
-                    var writer = new StreamWriter(stream);
-                    writer.Write(textFile);
-                    writer.Flush();
-                    stream.Seek(0, SeekOrigin.Begin);
-                    using (var fs = new FileStream(path, FileMode.OpenOrCreate))
-                    {
-                        stream.WriteTo(fs);
-                        fs.Flush();
-                    }
-                }
-            }
-        }
         private string GetLocation(string websiteName)
         {
             var downLoadPath = Server.MapPath(Utils.DownLoadFolder);
@@ -373,7 +392,7 @@ namespace GenerateHtml.Controllers
                             "' rel='stylesheet' />\n";
                     }
                     textFile = textFile.Replace(Utils.LayoutLibCss, libCss.Replace("'", "\""));
-                    textFile = textFile.Replace(Utils.LayoutStyleSheet, strStyleSheets.Replace("'","\""));
+                    textFile = textFile.Replace(Utils.LayoutStyleSheet, strStyleSheets.Replace("'", "\""));
                     textFile = textFile.Replace(Utils.LayoutBody, html);
                     var libScript = string.Empty;
                     foreach (var item in libScriptLinks)

@@ -50,7 +50,7 @@
             <div class="input-group">
                 <div class="box">
                     <label class="customfile-input">
-                        <input type="file" name="styleSheetFile" data-HasFile="@(!string.IsNullOrEmpty(Model.CssPath))" class="inputfile inputfile-6" data-multiple-caption="{count} files selected" accept=".css" />
+                        <input type="file" name="styleSheetFile" data-HasFile="True" class="inputfile inputfile-6" data-multiple-caption="{count} files selected" accept=".css" />
                         @if (!string.IsNullOrEmpty(Model.CssPath))
                         {
                             <span>@(Model.CssPath)</span>

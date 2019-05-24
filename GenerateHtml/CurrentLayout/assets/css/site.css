@@ -78,7 +78,9 @@ p {
     .wrap-content table tr:nth-of-type(2n) {
         background: rgba(0, 0, 0, .02);
     }
-
+.owl-carousel .owl-stage-outer {
+    width: 100%;
+}
 /*=========== scroll to top ==========*/
 .scroll-to-top {
     width: 40px;
